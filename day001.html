@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 001 · 用AI摸鱼的人</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-link">← 返回日志列表</a>
+
+    <div class="article-header">
+      <div class="post-meta">
+        <span class="day-badge">DAY 001</span>
+        <span class="date">2026-06-10</span>
+      </div>
+      <h1>从零开始：我让AI帮我建了一个网站</h1>
+      <div class="post-tags">
+        <span class="tag">建网站</span>
+        <span class="tag">Claude</span>
+        <span class="tag">第一次</span>
+        <span class="tag">HTML</span>
+      </div>
+    </div>
+
+    <div class="article-body">
+
+      <p>今天是第一天。</p>
+
+      <p>我是一个完完全全的小白——不会写代码，不懂什么框架，甚至不知道"建一个网站"到底需要哪些步骤。但我有一个想法：<strong>用AI摸鱼，然后把摸鱼的过程记录下来，让别人也能跟着学。</strong></p>
+
+      <blockquote>
+        "我不会，但AI会。我负责想，AI负责做。"
+      </blockquote>
+
+      <h2>今天的目标</h2>
+
+      <p>建一个网站。名字叫「用AI摸鱼的人」——跟我的小红书账号一样。要求：</p>
+      <ul style="margin: 0 0 20px 20px; line-height: 2;">
+        <li>有日志列表，能放每天的文章</li>
+        <li>有文章详情页</li>
+        <li>好看，至少不丑</li>
+        <li>有留言功能（以后网友能评论）</li>
+      </ul>
+
+      <h2>我是怎么跟AI说的</h2>
+
+      <p>我没有学任何教程，直接打开Claude，用中文说了我想要什么：</p>
+
+      <div class="chat-box">
+        <p class="me">🙋 我说：</p>
+        <p>我想做一个网站，记录我学AI的过程，网站名叫"用AI摸鱼的人"。我是完全的小白，你帮我从头建好可以吗？要有博客日志，能放文章，还有留言功能。</p>
+        <p class="ai">🤖 Claude说：</p>
+        <p>好的，我来帮你一步一步建。今天先做基础结构：首页、文章页、样式。留言功能我们明天加……</p>
+      </div>
+
+      <p>然后它就开始写代码了。我什么都没做，只是看着文件一个一个被创建出来。</p>
+
+      <h2>遇到的第一个问题</h2>
+
+      <p>文件建好之后，我不知道怎么"打开"这个网站。AI告诉我：直接双击 <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:13px;">index.html</code> 文件，用浏览器打开就行了。</p>
+
+      <p>就这？就这！！</p>
+
+      <p>双击之后，真的出来了。一个有模有样的网站，有标题，有我的第一篇文章入口，有页脚。</p>
+
+      <div class="tip-box">
+        💡 <strong>今天学到的：</strong>网站本质上就是一堆文件。HTML是骨架，CSS是皮肤。不需要服务器，本地直接双击就能看。以后如果要让别人也能访问，才需要"部署上线"——那是以后的事。
+      </div>
+
+      <h2>今天做出来了什么</h2>
+
+      <p>就是你现在看到的这个网站。它是今天的成果，也是这个系列的起点。</p>
+
+      <p>我问Claude：这个网站现在值多少钱？</p>
+
+      <p>它说：<em>如果找外包来做，大概要 3000-8000 块。我们今天用了大概 10 分钟。</em></p>
+
+      <p>我笑了。</p>
+
+      <h2>明天计划</h2>
+
+      <p>明天加留言功能——让网友可以在文章下面留言。我不知道怎么做，但我已经知道我会问谁了。</p>
+
+    </div>
+
+    <!-- 留言区 -->
+    <section class="comments-section">
+      <h2>💬 留言区</h2>
+
+      <div class="comment-form">
+        <textarea id="commentText" placeholder="说点什么吧～有问题、有想法、或者你也在学AI，都可以聊…"></textarea>
+        <div class="form-row">
+          <input type="text" id="commentName" placeholder="你的昵称" />
+          <button class="btn-submit" onclick="submitComment()">发送留言</button>
+        </div>
+      </div>
+
+      <div id="comments-list">
+        <div class="no-comments" id="no-comments-tip">还没有留言，来做第一个！🎉</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="#" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+  <script>
+    // 留言存储在本地（LocalStorage），后续可升级为云端数据库
+    const STORAGE_KEY = 'comments_day001';
+
+    function loadComments() {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const list = document.getElementById('comments-list');
+      const tip = document.getElementById('no-comments-tip');
+
+      if (data.length === 0) {
+        tip.style.display = 'block';
+        return;
+      }
+
+      tip.style.display = 'none';
+      // 清除旧的留言（保留tip节点）
+      list.querySelectorAll('.comment-item').forEach(el => el.remove());
+
+      data.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'comment-item';
+        item.innerHTML = `
+          <div class="comment-author">${escHtml(c.name)}<span class="comment-date">${c.date}</span></div>
+          <div class="comment-text">${escHtml(c.text)}</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function submitComment() {
+      const name = document.getElementById('commentName').value.trim() || '匿名摸鱼人';
+      const text = document.getElementById('commentText').value.trim();
+      if (!text) { alert('请写点内容再发～'); return; }
+
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      data.push({
+        name,
+        text,
+        date: new Date().toLocaleDateString('zh-CN')
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+      document.getElementById('commentText').value = '';
+      loadComments();
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    loadComments();
+  </script>
+
+</body>
+</html>
