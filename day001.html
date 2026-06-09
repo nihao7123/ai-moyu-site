@@ -5,6 +5,343 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DAY 001 · 用AI摸鱼的人</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ===== 文章专属样式 ===== */
+    .hero-banner {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff9a5c 50%, #ffb347 100%);
+      border-radius: 16px;
+      padding: 48px 32px;
+      margin-bottom: 40px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '🐟';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.08;
+      right: -20px;
+      top: -20px;
+    }
+    .hero-banner .episode {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 12px;
+    }
+    .hero-banner h1 {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+    .hero-banner .subtitle {
+      font-size: 15px;
+      opacity: 0.9;
+      line-height: 1.7;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.3);
+    }
+    .hero-stats .stat { text-align: center; }
+    .hero-stats .stat-num { font-size: 24px; font-weight: 900; }
+    .hero-stats .stat-label { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+
+    /* ===== 章节标题 ===== */
+    .chapter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 48px 0 20px;
+    }
+    .chapter-num {
+      background: #ff6b35;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .chapter h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a1a1a;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* ===== 对话气泡 ===== */
+    .chat-scene {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .chat-scene .scene-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .bubble-row { display: flex; margin-bottom: 16px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .avatar.me { background: #ff6b35; }
+    .avatar.ai { background: #1a1a2e; }
+    .bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .bubble.me {
+      background: #ff6b35;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .bubble.ai {
+      background: white;
+      color: #1a1a1a;
+      border: 1px solid #e5e7eb;
+      border-bottom-left-radius: 4px;
+    }
+    .bubble strong { font-weight: 700; }
+
+    /* ===== 步骤时间线 ===== */
+    .timeline { margin: 28px 0; }
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      padding-bottom: 24px;
+      position: relative;
+    }
+    .timeline-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      bottom: 0;
+      width: 2px;
+      background: #e5e7eb;
+    }
+    .timeline-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      background: #fff3ee;
+      border: 2px solid #ff6b35;
+    }
+    .timeline-dot.done { background: #ff6b35; }
+    .timeline-content { padding-top: 8px; flex: 1; }
+    .timeline-content .t-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .timeline-content .t-desc {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.7;
+    }
+    .timeline-content .t-result {
+      display: inline-block;
+      margin-top: 8px;
+      background: #ecfdf5;
+      color: #065f46;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ===== 知识卡片 ===== */
+    .knowledge-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 28px 0;
+    }
+    .knowledge-card .kc-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff6b35;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .knowledge-card .kc-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .knowledge-card .kc-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .knowledge-card .kc-text { font-size: 14px; line-height: 1.7; color: #d1d5db; }
+    .knowledge-card .kc-text strong { color: white; }
+
+    /* ===== 对比表格 ===== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    .compare-table th {
+      background: #ff6b35;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+    }
+    .compare-table th:first-child { border-radius: 8px 0 0 0; }
+    .compare-table th:last-child { border-radius: 0 8px 0 0; }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
+    }
+    .compare-table tr:nth-child(even) td { background: #fafaf8; }
+    .compare-table .yes { color: #059669; font-weight: 700; }
+    .compare-table .no { color: #dc2626; }
+
+    /* ===== 剧情转折 ===== */
+    .plot-twist {
+      background: #fffbeb;
+      border: 2px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #78350f;
+    }
+    .plot-twist .twist-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #f59e0b;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    /* ===== 成就卡片 ===== */
+    .achievement {
+      background: linear-gradient(135deg, #ff6b35, #ffb347);
+      color: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      text-align: center;
+    }
+    .achievement .trophy { font-size: 48px; margin-bottom: 12px; }
+    .achievement h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+    .achievement p { font-size: 13px; opacity: 0.9; line-height: 1.7; }
+
+    /* ===== 明日预告 ===== */
+    .tomorrow-card {
+      background: #1a1a2e;
+      color: white;
+      border-radius: 16px;
+      padding: 28px;
+      margin: 32px 0;
+    }
+    .tomorrow-card .label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ff6b35;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .tomorrow-card h3 {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .tomorrow-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 14px;
+      color: #d1d5db;
+    }
+    .tomorrow-item:last-child { border: none; }
+    .tomorrow-item .ti-icon { font-size: 20px; }
+
+    /* ===== 引用感悟 ===== */
+    .quote-block {
+      text-align: center;
+      padding: 32px 24px;
+      margin: 32px 0;
+    }
+    .quote-block .quote-text {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .quote-block .quote-sub {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    /* ===== 命令行展示 ===== */
+    .terminal {
+      background: #1e1e2e;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    .terminal .term-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .term-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .term-dot.r { background: #ff5f56; }
+    .term-dot.y { background: #ffbd2e; }
+    .term-dot.g { background: #27c93f; }
+    .terminal .term-line { color: #a6e3a1; margin-bottom: 4px; }
+    .terminal .term-line.cmd { color: #cdd6f4; }
+    .terminal .term-line.out { color: #6c7086; }
+    .terminal .term-line.success { color: #a6e3a1; }
+
+    p { margin-bottom: 18px; font-size: 15px; line-height: 1.9; color: #374151; }
+  </style>
 </head>
 <body>
 
@@ -25,85 +362,268 @@
   <main>
     <a href="index.html" class="back-link">← 返回日志列表</a>
 
-    <div class="article-header">
-      <div class="post-meta">
-        <span class="day-badge">DAY 001</span>
-        <span class="date">2026-06-10</span>
-      </div>
-      <h1>从零开始：我让AI帮我建了一个网站</h1>
-      <div class="post-tags">
-        <span class="tag">建网站</span>
-        <span class="tag">Claude</span>
-        <span class="tag">第一次</span>
-        <span class="tag">HTML</span>
+    <!-- 英雄区 -->
+    <div class="hero-banner">
+      <div class="episode">第一集 · 2026年6月10日</div>
+      <h1>一个什么都不会的人<br/>今天让AI帮她把网站搞上线了</h1>
+      <p class="subtitle">从"我想做一个网站"到全球可访问<br/>中间只隔了一个下午和若干次截图</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">行代码自己写</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">3</div>
+          <div class="stat-label">个文件建好了</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">1</div>
+          <div class="stat-label">个网站上线了</div>
+        </div>
       </div>
     </div>
 
+    <!-- 正文 -->
     <div class="article-body">
 
-      <p>今天是第一天。</p>
+      <p>我不知道你有没有那种感觉——<strong>想做一件事，但脑子里同时有一千个"我不会"</strong>。</p>
 
-      <p>我是一个完完全全的小白——不会写代码，不懂什么框架，甚至不知道"建一个网站"到底需要哪些步骤。但我有一个想法：<strong>用AI摸鱼，然后把摸鱼的过程记录下来，让别人也能跟着学。</strong></p>
+      <p>我想做一个网站，记录我学AI的过程。但我不会写代码，不知道什么是HTML，不知道"部署"是什么意思，更不知道为什么一个网站需要什么GitHub、什么服务器。</p>
 
-      <blockquote>
-        "我不会，但AI会。我负责想，AI负责做。"
-      </blockquote>
+      <p>我唯一知道的就是：我有Claude。</p>
 
-      <h2>今天的目标</h2>
+      <p>所以今天早上，我打开对话框，用最直白的大白话，说了我想要什么。</p>
 
-      <p>建一个网站。名字叫「用AI摸鱼的人」——跟我的小红书账号一样。要求：</p>
-      <ul style="margin: 0 0 20px 20px; line-height: 2;">
-        <li>有日志列表，能放每天的文章</li>
-        <li>有文章详情页</li>
-        <li>好看，至少不丑</li>
-        <li>有留言功能（以后网友能评论）</li>
-      </ul>
-
-      <h2>我是怎么跟AI说的</h2>
-
-      <p>我没有学任何教程，直接打开Claude，用中文说了我想要什么：</p>
-
-      <div class="chat-box">
-        <p class="me">🙋 我说：</p>
-        <p>我想做一个网站，记录我学AI的过程，网站名叫"用AI摸鱼的人"。我是完全的小白，你帮我从头建好可以吗？要有博客日志，能放文章，还有留言功能。</p>
-        <p class="ai">🤖 Claude说：</p>
-        <p>好的，我来帮你一步一步建。今天先做基础结构：首页、文章页、样式。留言功能我们明天加……</p>
+      <!-- 第一章 -->
+      <div class="chapter">
+        <span class="chapter-num">第一幕</span>
+        <h2>开口的那一刻，就已经开始了</h2>
       </div>
 
-      <p>然后它就开始写代码了。我什么都没做，只是看着文件一个一个被创建出来。</p>
-
-      <h2>遇到的第一个问题</h2>
-
-      <p>文件建好之后，我不知道怎么"打开"这个网站。AI告诉我：直接双击 <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:13px;">index.html</code> 文件，用浏览器打开就行了。</p>
-
-      <p>就这？就这！！</p>
-
-      <p>双击之后，真的出来了。一个有模有样的网站，有标题，有我的第一篇文章入口，有页脚。</p>
-
-      <div class="tip-box">
-        💡 <strong>今天学到的：</strong>网站本质上就是一堆文件。HTML是骨架，CSS是皮肤。不需要服务器，本地直接双击就能看。以后如果要让别人也能访问，才需要"部署上线"——那是以后的事。
+      <div class="chat-scene">
+        <div class="scene-label">💬 今天的第一句话</div>
+        <div class="bubble-row right">
+          <div class="avatar me">我</div>
+          <div class="bubble me">我是小白，我要跟你学怎么制作AI Agent。然后发小红书。我今天想重新做一个新的网页，每天增加一个新的功能，同时记录我学习的过程……网站名字叫：用AI摸鱼的人。</div>
+        </div>
+        <div class="bubble-row">
+          <div class="avatar ai">🤖</div>
+          <div class="bubble ai">好。<br/>你的角色是：<strong>体验者 + 内容主角</strong><br/>我的角色是：<strong>工具 + 幕后执行</strong><br/>现在开始，今天 Day 1，我帮你建网站。</div>
+        </div>
       </div>
 
-      <h2>今天做出来了什么</h2>
+      <p>就这样，什么准备都没有，直接开始了。</p>
+      <p>几分钟后，三个文件出现在我的电脑里：<code style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:13px;">index.html</code>、<code style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:13px;">style.css</code>、<code style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:13px;">day001.html</code>。双击 index.html，浏览器打开——一个橙色主题、有logo、有导航、有文章卡片的网站，就这么出来了。</p>
 
-      <p>就是你现在看到的这个网站。它是今天的成果，也是这个系列的起点。</p>
+      <div class="knowledge-card">
+        <div class="kc-title">💡 今天学到的第一件事</div>
+        <div class="kc-item">
+          <span class="kc-icon">🦴</span>
+          <div class="kc-text"><strong>HTML</strong> = 网页的骨架，决定"有什么"</div>
+        </div>
+        <div class="kc-item">
+          <span class="kc-icon">👗</span>
+          <div class="kc-text"><strong>CSS</strong> = 网页的皮肤，决定"好不好看"</div>
+        </div>
+        <div class="kc-item">
+          <span class="kc-icon">🧠</span>
+          <div class="kc-text"><strong>JavaScript</strong> = 网页的大脑，决定"能做什么"</div>
+        </div>
+        <div class="kc-item">
+          <span class="kc-icon">🖥️</span>
+          <div class="kc-text">本地预览：双击 .html 文件就能看，<strong>不需要任何服务器</strong></div>
+        </div>
+      </div>
 
-      <p>我问Claude：这个网站现在值多少钱？</p>
+      <!-- 第二章 -->
+      <div class="chapter">
+        <span class="chapter-num">第二幕</span>
+        <h2>想让全世界看到——那就要"上线"</h2>
+      </div>
 
-      <p>它说：<em>如果找外包来做，大概要 3000-8000 块。我们今天用了大概 10 分钟。</em></p>
+      <p>网站在我自己电脑上长得很好看。但有个问题：<strong>只有我自己能看到。</strong></p>
+      <p>我想让任何人，拿到一个链接，就能访问。这叫"部署上线"。</p>
+      <p>我问 Claude：怎么做？它说：用 <strong>GitHub Pages</strong>，免费，专门给静态网站用的，而且国内访问稳定。</p>
 
-      <p>我笑了。</p>
+      <div class="knowledge-card">
+        <div class="kc-title">💡 GitHub 和 GitHub Pages 是什么</div>
+        <div class="kc-item">
+          <span class="kc-icon">📦</span>
+          <div class="kc-text"><strong>GitHub</strong> = 存代码的地方，像网盘，但专门放网站文件，有版本记录</div>
+        </div>
+        <div class="kc-item">
+          <span class="kc-icon">🌐</span>
+          <div class="kc-text"><strong>GitHub Pages</strong> = 把 GitHub 里的文件变成网站，自动给你一个 .github.io 的网址</div>
+        </div>
+        <div class="kc-item">
+          <span class="kc-icon">🔄</span>
+          <div class="kc-text">以后每次更新内容，推一下 GitHub，<strong>网站自动更新</strong></div>
+        </div>
+      </div>
 
-      <h2>明天计划</h2>
+      <!-- 第三章 -->
+      <div class="chapter">
+        <span class="chapter-num">第三幕</span>
+        <h2>安装工具：我以为会很难，结果……</h2>
+      </div>
 
-      <p>明天加留言功能——让网友可以在文章下面留言。我不知道怎么做，但我已经知道我会问谁了。</p>
+      <p>要把文件推上 GitHub，需要一个叫 <strong>GitHub CLI</strong> 的工具。我说让 Claude 帮我弄，它直接在我电脑后台安装好了。</p>
+
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot r"></div>
+          <div class="term-dot y"></div>
+          <div class="term-dot g"></div>
+        </div>
+        <div class="term-line cmd">winget install --id GitHub.cli</div>
+        <div class="term-line out">正在下载 GitHub CLI v2.93.0...</div>
+        <div class="term-line success">✓ 安装完成</div>
+      </div>
+
+      <p>然后需要我做一件事：<strong>登录 GitHub</strong>。这是今天唯一一次需要我亲自动手的操作。</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot done">💻</div>
+          <div class="timeline-content">
+            <div class="t-title">打开 PowerShell，输入登录命令</div>
+            <div class="t-desc">Claude 给了我一行命令，我复制粘贴进去，回车</div>
+            <span class="t-result">✓ 出现选项菜单</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot done">🌐</div>
+          <div class="timeline-content">
+            <div class="t-title">全选第一个选项，连按四次回车</div>
+            <div class="t-desc">GitHub.com → HTTPS → Yes → Login with web browser</div>
+            <span class="t-result">✓ 浏览器自动打开</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot done">✉️</div>
+          <div class="timeline-content">
+            <div class="t-title">邮箱验证</div>
+            <div class="t-desc">GitHub 发了一封邮件，点击里面的链接确认</div>
+            <span class="t-result">✓ Congratulations, you're all set!</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot done">🚀</div>
+          <div class="timeline-content">
+            <div class="t-title">Claude 一键创建仓库 + 上传 + 开启 Pages</div>
+            <div class="t-desc">我什么都没做，盯着屏幕看输出</div>
+            <span class="t-result">✓ 网站上线：nihao7123.github.io/ai-moyu-site/</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第四章：留言板的曲折 -->
+      <div class="chapter">
+        <span class="chapter-num">第四幕</span>
+        <h2>留言板：一场意外的三角恋</h2>
+      </div>
+
+      <p>网站上线之后，我想加一个留言板，让网友能互动。这时候发生了今天最戏剧性的一段。</p>
+
+      <div class="plot-twist">
+        <div class="twist-label">⚡ 剧情转折</div>
+        我看到了另一个网站用的 Disqus 留言板，样式很漂亮。于是说：我要那个。
+        Claude 换上了 Disqus。然后我问：国内用户能用吗？
+        <br/><br/>
+        Claude 说：……<strong>Disqus 在国内经常被墙。</strong>
+      </div>
+
+      <p>于是我们来了一轮真实的对比分析：</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>留言方案</th>
+            <th>国内能访问？</th>
+            <th>留言门槛</th>
+            <th>适合谁</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Giscus</strong></td>
+            <td class="yes">✅ 基本稳定</td>
+            <td>GitHub 账号</td>
+            <td>技术用户、年轻人</td>
+          </tr>
+          <tr>
+            <td><strong>Disqus</strong></td>
+            <td class="no">❌ 经常被墙</td>
+            <td>海外社交账号</td>
+            <td>海外用户</td>
+          </tr>
+          <tr>
+            <td><strong>Twikoo等国内方案</strong></td>
+            <td class="yes">✅ 完全稳定</td>
+            <td>微信/手机号</td>
+            <td>普通中国用户</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>我的小红书粉丝大部分在国内，结论很清晰——<strong>换回 Giscus</strong>。GitHub 账号现在年轻人基本都有，而且 Giscus 完全不被墙，留言还存在 GitHub 上，永久保存。</p>
+
+      <div class="chat-scene">
+        <div class="scene-label">💬 最终决定</div>
+        <div class="bubble-row right">
+          <div class="avatar me">我</div>
+          <div class="bubble me">换回去吧，我的目标大部分都是国内的人</div>
+        </div>
+        <div class="bubble-row">
+          <div class="avatar ai">🤖</div>
+          <div class="bubble ai">好，换回 Giscus 了，等 1 分钟刷新就能看到。<br/>顺便提一下：今天你做决策的依据，不是凭感觉，而是真正分析了用户群体。<strong>这本身就是产品思维。</strong></div>
+        </div>
+      </div>
+
+      <!-- 成就 -->
+      <div class="achievement">
+        <div class="trophy">🏆</div>
+        <h3>DAY 001 完成成就解锁</h3>
+        <p>从零到上线，全程不会写代码<br/>建了网站 · 部署上线 · 装上留言板 · 完成第一篇文章</p>
+      </div>
+
+      <!-- 感悟 -->
+      <div class="quote-block">
+        <div class="quote-text">"我不会，但AI会。<br/>我负责想，AI负责做。"</div>
+        <div class="quote-sub">这不是偷懒，这是2026年最聪明的工作方式</div>
+      </div>
+
+      <p>今天最大的收获不是学会了什么技术。而是我意识到：<strong>以前拦住我的不是难度，是开口的勇气。</strong></p>
+      <p>从"我想做一个网站"到网站真的上线，中间没有神秘的技术门槛，没有需要背诵的命令，只有一个过程：<strong>把想法说出来，然后跟AI一起把它变成现实。</strong></p>
+
+      <!-- 明日预告 -->
+      <div class="tomorrow-card">
+        <div class="label">📺 明日预告 · DAY 002</div>
+        <h3>网站变好看了，<br/>还多了一个跳转到小红书的入口</h3>
+        <div class="tomorrow-item">
+          <span class="ti-icon">🎨</span>
+          <span>升级背景和排版，让整个网站看起来更专业</span>
+        </div>
+        <div class="tomorrow-item">
+          <span class="ti-icon">📱</span>
+          <span>加入小红书主页链接，点击直接跳转</span>
+        </div>
+        <div class="tomorrow-item">
+          <span class="ti-icon">🔗</span>
+          <span>把不同平台连起来，形成自己的内容生态</span>
+        </div>
+        <div class="tomorrow-item">
+          <span class="ti-icon">❓</span>
+          <span>还有一个功能，目前还不确定——等网友留言告诉我想要什么</span>
+        </div>
+      </div>
 
     </div>
 
     <!-- 留言区 -->
     <section class="comments-section">
       <h2>💬 留言区</h2>
-      <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">用 GitHub 账号登录即可留言，留言永久保存，全球可见。</p>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">你想让明天的网站加什么功能？留言告诉我，说不定明天就实现了。</p>
       <script src="https://giscus.app/client.js"
         data-repo="nihao7123/ai-moyu-site"
         data-repo-id="R_kgDOS14L6A"
