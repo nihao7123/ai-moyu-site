@@ -103,18 +103,23 @@
     <!-- 留言区 -->
     <section class="comments-section">
       <h2>💬 留言区</h2>
-
-      <div class="comment-form">
-        <textarea id="commentText" placeholder="说点什么吧～有问题、有想法、或者你也在学AI，都可以聊…"></textarea>
-        <div class="form-row">
-          <input type="text" id="commentName" placeholder="你的昵称" />
-          <button class="btn-submit" onclick="submitComment()">发送留言</button>
-        </div>
-      </div>
-
-      <div id="comments-list">
-        <div class="no-comments" id="no-comments-tip">还没有留言，来做第一个！🎉</div>
-      </div>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">用 GitHub 账号登录即可留言，留言永久保存，全球可见。</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
     </section>
 
   </main>
@@ -123,59 +128,6 @@
     <p>用AI摸鱼的人 · 2026 · <a href="#" target="_blank">小红书同名账号</a></p>
     <p class="footer-note">网站本身也是AI造的 🤖</p>
   </footer>
-
-  <script>
-    // 留言存储在本地（LocalStorage），后续可升级为云端数据库
-    const STORAGE_KEY = 'comments_day001';
-
-    function loadComments() {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      const list = document.getElementById('comments-list');
-      const tip = document.getElementById('no-comments-tip');
-
-      if (data.length === 0) {
-        tip.style.display = 'block';
-        return;
-      }
-
-      tip.style.display = 'none';
-      // 清除旧的留言（保留tip节点）
-      list.querySelectorAll('.comment-item').forEach(el => el.remove());
-
-      data.forEach(c => {
-        const item = document.createElement('div');
-        item.className = 'comment-item';
-        item.innerHTML = `
-          <div class="comment-author">${escHtml(c.name)}<span class="comment-date">${c.date}</span></div>
-          <div class="comment-text">${escHtml(c.text)}</div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function submitComment() {
-      const name = document.getElementById('commentName').value.trim() || '匿名摸鱼人';
-      const text = document.getElementById('commentText').value.trim();
-      if (!text) { alert('请写点内容再发～'); return; }
-
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      data.push({
-        name,
-        text,
-        date: new Date().toLocaleDateString('zh-CN')
-      });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-      document.getElementById('commentText').value = '';
-      loadComments();
-    }
-
-    function escHtml(str) {
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    loadComments();
-  </script>
 
 </body>
 </html>
