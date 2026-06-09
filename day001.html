@@ -103,22 +103,19 @@
     <!-- 留言区 -->
     <section class="comments-section">
       <h2>💬 留言区</h2>
-      <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">用 GitHub 账号登录即可留言，留言永久保存，全球可见。</p>
-      <script src="https://giscus.app/client.js"
-        data-repo="nihao7123/ai-moyu-site"
-        data-repo-id="R_kgDOS14L6A"
-        data-category="General"
-        data-category-id="DIC_kwDOS14L6M4C-2f7"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="light"
-        data-lang="zh-CN"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">欢迎留下你的想法，可以用邮箱、微博、微信等账号登录留言。</p>
+      <div id="disqus_thread"></div>
+      <script>
+        var disqus_config = function () {
+          this.page.url = 'https://nihao7123.github.io/ai-moyu-site/day001.html';
+          this.page.identifier = 'day001';
+        };
+        (function() {
+          var d = document, s = d.createElement('script');
+          s.src = 'https://yong-aimo-yu-de-ren.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
       </script>
     </section>
 
