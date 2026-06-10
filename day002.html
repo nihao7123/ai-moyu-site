@@ -387,7 +387,7 @@
 
   <script>
     const API_KEY = 'AQ.Ab8RN6KjPcGWLGqr4_2y3ZfKdecHTG-xMbaak4IAwwxVvaaRBA';
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
     const SYSTEM_PROMPT = `你是"摸鱼AI"，是一个叫"用AI摸鱼的人"的网站上的AI助手。
 
@@ -482,11 +482,12 @@
           messages.push({ role: 'model', parts: [{ text: reply }] });
           addMessage('bot', reply);
         } else {
-          addMessage('bot', '出了点问题，稍后再试试～');
+          const errMsg = data.error ? data.error.message : JSON.stringify(data);
+          addMessage('bot', '错误：' + errMsg);
         }
       } catch (e) {
         hideTyping();
-        addMessage('bot', '网络有点问题，刷新一下再试？');
+        addMessage('bot', '错误：' + e.message);
       }
 
       sendBtn.disabled = false;
