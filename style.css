@@ -100,6 +100,17 @@ main {
   line-height: 1.8;
 }
 
+/* ===== Intro List ===== */
+.intro-list {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,107,53,0.2);
+  font-size: 13px;
+}
+.intro-list p { margin-bottom: 6px; font-weight: 600; color: #7c3a1e; }
+.intro-list ol { padding-left: 20px; }
+.intro-list ol li { margin-bottom: 4px; color: #7c3a1e; line-height: 1.7; }
+
 /* ===== Section Title ===== */
 .section-title {
   font-size: 15px;
