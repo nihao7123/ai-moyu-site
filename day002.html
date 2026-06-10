@@ -387,7 +387,7 @@
 
   <script>
     const API_KEY = 'AQ.Ab8RN6KjPcGWLGqr4_2y3ZfKdecHTG-xMbaak4IAwwxVvaaRBA';
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
 
     const SYSTEM_PROMPT = `你是"摸鱼AI"，是一个叫"用AI摸鱼的人"的网站上的AI助手。
 
@@ -463,10 +463,12 @@
       showTyping();
 
       try {
-        const body = {
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: messages
-        };
+        const allMessages = [
+          { role: 'user', parts: [{ text: SYSTEM_PROMPT + '\n\n请记住以上设定，回复"明白"。' }] },
+          { role: 'model', parts: [{ text: '明白，我是摸鱼AI，随时准备聊。' }] },
+          ...messages
+        ];
+        const body = { contents: allMessages };
 
         const res = await fetch(API_URL, {
           method: 'POST',
