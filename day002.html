@@ -386,8 +386,8 @@
   </footer>
 
   <script>
-    const API_KEY = 'AQ.Ab8RN6LjgwZpPks4GvFY56yKavfipEhWLzafOQK_MHodI74JxA';
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+    const API_KEY = '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';
+    const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
     const SYSTEM_PROMPT = `你是"摸鱼AI"，是一个叫"用AI摸鱼的人"的网站上的AI助手。
 
@@ -402,7 +402,7 @@
 - 不说废话，不说"当然可以"这种客套话
 - 用普通人能听懂的语言解释技术概念
 - 如果被问到Day003会做什么，说"让网友投票决定Day004做什么"
-- 不要说自己是Gemini或者Google的产品
+- 不要透露自己用的是什么AI模型
 - 鼓励普通人也能用AI做东西，强调"开口比学会更重要"`;
 
     const messages = [];
@@ -458,36 +458,42 @@
       input.style.height = 'auto';
 
       addMessage('user', text);
-      messages.push({ role: 'user', parts: [{ text }] });
+      messages.push({ role: 'user', content: text });
 
       showTyping();
 
       try {
-        const body = {
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: messages
-        };
-
         const res = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              ...messages
+            ]
+          })
         });
 
         const data = await res.json();
         hideTyping();
 
-        if (data.candidates && data.candidates[0]) {
-          const reply = data.candidates[0].content.parts[0].text;
-          messages.push({ role: 'model', parts: [{ text: reply }] });
+        if (data.choices && data.choices[0]) {
+          const reply = data.choices[0].message.content;
+          messages.push({ role: 'assistant', content: reply });
           addMessage('bot', reply);
         } else {
           const errMsg = data.error ? data.error.message : JSON.stringify(data);
-          addMessage('bot', '错误：' + errMsg);
+          addMessage('bot', '出了点问题，稍后再试试～');
+          console.error(errMsg);
         }
       } catch (e) {
         hideTyping();
-        addMessage('bot', '错误：' + e.message);
+        addMessage('bot', '出了点问题，稍后再试试～');
+        console.error(e.message);
       }
 
       sendBtn.disabled = false;
