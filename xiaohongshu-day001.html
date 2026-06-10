@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>小红书图片卡片 · DAY 001 v2</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .card {
+      width: 360px;
+      height: 480px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-wrapper { display: flex; flex-direction: column; align-items: center; }
+    .card-label { color: #555; font-size: 12px; text-align: center; margin-bottom: 8px; }
+
+    /* ===========================
+       第1张：封面（版本C）
+    =========================== */
+    .c1 { background: #0d0d0d; }
+    .c1 .stripe {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #ff6b35, #ffb347);
+    }
+    .c1 .content {
+      position: absolute;
+      inset: 0;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .c1 .series-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .c1 .fish { font-size: 22px; }
+    .c1 .series-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #555;
+      letter-spacing: 0.05em;
+    }
+    .c1 .day-num {
+      font-size: 100px;
+      font-weight: 900;
+      color: rgba(255,107,53,0.12);
+      line-height: 1;
+      position: absolute;
+      right: 16px;
+      top: 60px;
+      letter-spacing: -4px;
+    }
+    .c1 .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 20px;
+    }
+    .c1 .day-badge {
+      display: inline-block;
+      background: #ff6b35;
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      width: fit-content;
+      margin-bottom: 18px;
+    }
+    .c1 .headline {
+      font-size: 40px;
+      font-weight: 900;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .c1 .headline .accent { color: #ff6b35; }
+    .c1 .age-line {
+      font-size: 52px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    .c1 .day-badge-inline {
+      display: inline-block;
+      background: #ff6b35;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 20px;
+      width: fit-content;
+      margin-top: 16px;
+    }
+    .c1 .bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .c1 .account { font-size: 12px; color: #444; }
+    .c1 .account b { color: #ff6b35; }
+    .c1 .page { font-size: 11px; color: #333; }
+
+    /* ===========================
+       第2张：代入感（保持原版）
+    =========================== */
+    .c2 { background: linear-gradient(160deg, #fff8f5 0%, #fff 100%); }
+    .c2 .content {
+      position: absolute; inset: 0;
+      padding: 32px 28px;
+      display: flex; flex-direction: column;
+    }
+    .c2 .day-line {
+      font-size: 11px; font-weight: 800;
+      color: #ff6b35; margin-bottom: 6px;
+    }
+    .c2 .tag {
+      background: #fff3ee; color: #ff6b35;
+      font-size: 12px; font-weight: 800;
+      padding: 4px 12px; border-radius: 20px;
+      width: fit-content; margin-bottom: 20px;
+    }
+    .c2 .title {
+      font-size: 24px; font-weight: 900;
+      color: #1a1a1a; line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    .c2 .title span { color: #ff6b35; }
+    .c2 .items { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .c2 .item {
+      display: flex; align-items: flex-start;
+      gap: 12px; background: white;
+      border-radius: 12px; padding: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .c2 .item .icon { font-size: 22px; flex-shrink: 0; }
+    .c2 .item .text { font-size: 14px; color: #374151; line-height: 1.6; }
+    .c2 .item .text strong { color: #1a1a1a; }
+    .c2 .bottom-text {
+      font-size: 13px; color: #ff6b35;
+      font-weight: 700; text-align: center;
+      padding-top: 14px;
+    }
+
+    /* ===========================
+       第3张：转折（去掉"最聪明"）
+    =========================== */
+    .c3 { background: #0d0d0d; }
+    .c3 .glow {
+      position: absolute;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(255,107,53,0.18) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .c3 .content {
+      position: absolute; inset: 0;
+      padding: 36px 32px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+    }
+    .c3 .day-line { font-size: 11px; font-weight: 800; color: #ff6b35; margin-bottom: 24px; }
+    .c3 .emoji-big { font-size: 56px; margin-bottom: 24px; }
+    .c3 .big-quote {
+      font-size: 32px; font-weight: 900;
+      color: white; line-height: 1.5;
+      margin-bottom: 28px;
+    }
+    .c3 .big-quote .accent { color: #ff6b35; }
+    .c3 .three-line {
+      display: flex; flex-direction: column; gap: 10px;
+      width: 100%;
+    }
+    .c3 .tl-item {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px; color: #d1d5db;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .c3 .tl-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%; background: #ff6b35;
+      flex-shrink: 0;
+    }
+
+    /* ===========================
+       第4张：过程（加真实感）
+    =========================== */
+    .c4 { background: white; }
+    .c4 .header {
+      background: #ff6b35;
+      padding: 22px 28px 18px;
+    }
+    .c4 .header .h-day { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 800; margin-bottom: 4px; }
+    .c4 .header .h-title { font-size: 20px; font-weight: 900; color: white; line-height: 1.3; }
+    .c4 .real-tag {
+      background: rgba(255,255,255,0.2);
+      color: white; font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 10px;
+      display: inline-block; margin-top: 8px;
+    }
+    .c4 .steps { padding: 18px 24px; display: flex; flex-direction: column; gap: 0; }
+    .c4 .step {
+      display: flex; gap: 14px;
+      position: relative; padding-bottom: 16px;
+    }
+    .c4 .step:not(:last-child)::after {
+      content: ''; position: absolute;
+      left: 17px; top: 34px; bottom: 0;
+      width: 2px; background: #f3f4f6;
+    }
+    .c4 .step-num {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #ff6b35; color: white;
+      font-size: 14px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .c4 .step-body { padding-top: 4px; flex: 1; }
+    .c4 .step-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
+    .c4 .step-desc { font-size: 12px; color: #9ca3af; line-height: 1.6; }
+    .c4 .step-result {
+      display: inline-block;
+      background: #ecfdf5; color: #059669;
+      font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; margin-top: 3px;
+    }
+    .c4 .step-warn {
+      display: inline-block;
+      background: #fef3c7; color: #d97706;
+      font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; margin-top: 3px;
+    }
+    .c4 .honest-box {
+      margin: 0 24px 16px;
+      background: #fff8f5;
+      border-left: 3px solid #ff6b35;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 12px; color: #7c3a1e; line-height: 1.7;
+    }
+
+    /* ===========================
+       第5张：成果（加红圈留言板）
+    =========================== */
+    .c5 { background: linear-gradient(160deg, #0d0d0d 0%, #1a0a00 100%); }
+    .c5 .content {
+      position: absolute; inset: 0;
+      padding: 28px;
+      display: flex; flex-direction: column;
+    }
+    .c5 .day-line { font-size: 11px; font-weight: 800; color: #ff6b35; margin-bottom: 10px; }
+    .c5 .title {
+      font-size: 26px; font-weight: 900;
+      color: white; line-height: 1.3; margin-bottom: 20px;
+    }
+    .c5 .title span { color: #ff6b35; }
+    .c5 .browser {
+      background: #1e1e1e; border-radius: 10px;
+      overflow: hidden; flex: 1;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .c5 .browser-bar {
+      background: #2d2d2d; padding: 8px 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .c5 .dots { display: flex; gap: 4px; }
+    .c5 .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .c5 .dot.r { background: #ff5f56; }
+    .c5 .dot.y { background: #ffbd2e; }
+    .c5 .dot.g { background: #27c93f; }
+    .c5 .url {
+      flex: 1; background: #3d3d3d;
+      border-radius: 4px; padding: 3px 10px;
+      font-size: 10px; color: #a3e635; font-family: monospace;
+    }
+    .c5 .browser-body {
+      flex: 1; padding: 14px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .c5 .mock-nav {
+      background: #2d2d2d; border-radius: 6px;
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .c5 .mock-logo { font-size: 16px; }
+    .c5 .mock-site-name { font-size: 11px; font-weight: 700; color: white; }
+    .c5 .mock-card {
+      background: #2d2d2d; border-radius: 8px;
+      padding: 12px; flex: 1;
+    }
+    .c5 .mock-badge {
+      background: #ff6b35; color: white;
+      font-size: 8px; font-weight: 700;
+      padding: 2px 6px; border-radius: 8px;
+      display: inline-block; margin-bottom: 6px;
+    }
+    .c5 .mock-title { font-size: 11px; font-weight: 700; color: white; margin-bottom: 6px; }
+    .c5 .mock-line { height: 5px; background: #3d3d3d; border-radius: 3px; margin-bottom: 4px; }
+    .c5 .mock-line.w80 { width: 80%; }
+    .c5 .mock-line.w60 { width: 60%; }
+    /* 留言板区域+红圈 */
+    .c5 .mock-comment {
+      background: #252525; border-radius: 6px;
+      padding: 8px 10px;
+      display: flex; align-items: center; gap: 8px;
+      position: relative;
+    }
+    .c5 .mock-comment-icon { font-size: 14px; }
+    .c5 .mock-comment-text { font-size: 9px; color: #888; }
+    .c5 .red-ring {
+      position: absolute;
+      border: 2px solid #ff3b30;
+      border-radius: 8px;
+      padding: 4px 8px;
+      right: -6px; bottom: -6px;
+      left: -6px; top: -6px;
+      pointer-events: none;
+    }
+    .c5 .red-label {
+      position: absolute;
+      right: 8px; top: -18px;
+      background: #ff3b30; color: white;
+      font-size: 9px; font-weight: 800;
+      padding: 2px 8px; border-radius: 10px;
+    }
+    .c5 .bottom-url {
+      font-size: 11px; color: #ff6b35;
+      font-family: monospace; margin-top: 10px; text-align: center;
+    }
+
+    /* ===========================
+       第6张：留言板三角恋（保持）
+    =========================== */
+    .c6 { background: #fffbf5; }
+    .c6 .content {
+      position: absolute; inset: 0;
+      padding: 28px; display: flex; flex-direction: column;
+    }
+    .c6 .day-line { font-size: 11px; font-weight: 800; color: #ff6b35; margin-bottom: 8px; }
+    .c6 .tag {
+      background: #fef3c7; color: #d97706;
+      font-size: 11px; font-weight: 800;
+      padding: 4px 12px; border-radius: 20px;
+      width: fit-content; margin-bottom: 14px;
+    }
+    .c6 .title {
+      font-size: 24px; font-weight: 900;
+      color: #1a1a1a; line-height: 1.3; margin-bottom: 16px;
+    }
+    .c6 .drama { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .c6 .d-item {
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .c6 .d-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .c6 .d-text { font-size: 13px; color: #374151; line-height: 1.7; }
+    .c6 .d-text strong { color: #1a1a1a; }
+    .c6 .d-text .hl { color: #ff6b35; font-weight: 700; }
+    .c6 .verdict {
+      background: #ff6b35; color: white;
+      border-radius: 12px; padding: 14px;
+      font-size: 13px; font-weight: 700;
+      text-align: center; margin-top: 10px; line-height: 1.7;
+    }
+
+    /* ===========================
+       第7张：接地气版知识卡
+    =========================== */
+    .c7 { background: #0f172a; }
+    .c7 .content {
+      position: absolute; inset: 0;
+      padding: 28px; display: flex; flex-direction: column;
+    }
+    .c7 .day-line { font-size: 11px; font-weight: 800; color: #ff6b35; margin-bottom: 10px; }
+    .c7 .title {
+      font-size: 22px; font-weight: 900;
+      color: white; line-height: 1.3; margin-bottom: 8px;
+    }
+    .c7 .subtitle { font-size: 13px; color: #475569; margin-bottom: 22px; }
+    .c7 .cards { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .c7 .kc {
+      background: #1e293b;
+      border-radius: 12px; padding: 14px 16px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .c7 .kc-icon { font-size: 28px; flex-shrink: 0; }
+    .c7 .kc-body {}
+    .c7 .kc-term {
+      font-size: 14px; font-weight: 800;
+      color: #ff6b35; margin-bottom: 2px;
+    }
+    .c7 .kc-def { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+    .c7 .kc-def b { color: white; }
+    .c7 .bottom-note {
+      font-size: 12px; color: #334155;
+      text-align: center; margin-top: 14px; line-height: 1.7;
+    }
+
+    /* ===========================
+       第8张：金句（更真实版）
+    =========================== */
+    .c8 { background: #0d0d0d; }
+    .c8 .top-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #ff6b35, #ffb347);
+    }
+    .c8 .content {
+      position: absolute; inset: 0;
+      padding: 40px 32px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+    }
+    .c8 .day-line { font-size: 11px; font-weight: 800; color: #ff6b35; margin-bottom: 28px; }
+    .c8 .quote-marks { font-size: 48px; color: #ff6b35; line-height: 0.5; margin-bottom: 20px; }
+    .c8 .quote {
+      font-size: 28px; font-weight: 900;
+      color: white; line-height: 1.5; margin-bottom: 28px;
+    }
+    .c8 .quote .accent { color: #ff6b35; }
+    .c8 .divider {
+      width: 40px; height: 2px;
+      background: #333; margin-bottom: 20px;
+    }
+    .c8 .sub {
+      font-size: 14px; color: #555; line-height: 1.8;
+    }
+    .c8 .day-counter {
+      margin-top: 28px;
+      font-size: 12px; color: #333;
+    }
+
+    /* ===========================
+       第9张：明日预告（有理由关注）
+    =========================== */
+    .c9 { background: #0d0d0d; }
+    .c9 .content {
+      position: absolute; inset: 0;
+      padding: 28px; display: flex; flex-direction: column;
+    }
+    .c9 .day-line { font-size: 11px; font-weight: 800; color: #ff6b35; margin-bottom: 12px; }
+    .c9 .title {
+      font-size: 22px; font-weight: 900;
+      color: white; line-height: 1.4; margin-bottom: 18px;
+    }
+    .c9 .title span { color: #ff6b35; }
+    .c9 .preview-label {
+      font-size: 12px; font-weight: 700; color: #555;
+      margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .c9 .preview-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .c9 .p-item {
+      display: flex; align-items: center; gap: 12px;
+      background: #1a1a1a; border-radius: 10px; padding: 12px 14px;
+      border-left: 3px solid #ff6b35;
+    }
+    .c9 .p-icon { font-size: 18px; }
+    .c9 .p-text { font-size: 13px; color: #d1d5db; line-height: 1.5; }
+    .c9 .p-text strong { color: white; }
+    .c9 .cta-box {
+      background: linear-gradient(135deg, #ff6b35, #ff9a5c);
+      border-radius: 14px; padding: 18px;
+      text-align: center; margin-top: auto;
+    }
+    .c9 .cta-main { font-size: 18px; font-weight: 900; color: white; margin-bottom: 6px; }
+    .c9 .cta-sub { font-size: 12px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+    .c9 .url-hint {
+      font-size: 10px; color: #333;
+      text-align: center; margin-top: 10px; font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== 第1张：封面（版本C）===== -->
+<div class="card-wrapper">
+  <div class="card-label">第1张 · 封面</div>
+  <div class="card c1">
+    <div class="stripe"></div>
+    <div class="content">
+      <div class="series-tag">
+        <span class="fish">🐟</span>
+        <span class="series-name">用AI摸鱼的人</span>
+      </div>
+      <div class="day-num">001</div>
+      <div class="main">
+        <div class="age-line">37岁了</div>
+        <div class="headline">我决定用AI<br/><span class="accent">重新学</span><br/>一次人生</div>
+        <div class="day-badge-inline">DAY 001 · 我把网站做出来了</div>
+      </div>
+      <div class="bottom">
+        <div class="account">小红书 <b>@用AI摸鱼的人</b></div>
+        <div class="page">1 / 9</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第2张：代入感 ===== -->
+<div class="card-wrapper">
+  <div class="card-label">第2张 · 代入感</div>
+  <div class="card c2">
+    <div class="content">
+      <div class="day-line">DAY 001 · 早上8点</div>
+      <div class="tag">你有没有这种感觉？</div>
+      <div class="title">想做一件事<br/>但脑子里有<span>一千个</span><br/>"我不会"</div>
+      <div class="items">
+        <div class="item">
+          <div class="icon">😰</div>
+          <div class="text">想做网站，但<strong>不会写代码</strong></div>
+        </div>
+        <div class="item">
+          <div class="icon">😵</div>
+          <div class="text">听到"部署""服务器"就<strong>头大</strong></div>
+        </div>
+        <div class="item">
+          <div class="icon">😤</div>
+          <div class="text">感觉AI是<strong>别人用的东西</strong>，跟我没关系</div>
+        </div>
+      </div>
+      <div class="bottom-text">这就是我今天早上的状态 👇</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第3张：转折 ===== -->
+<div class="card-wrapper">
+  <div class="card-label">第3张 · 转折</div>
+  <div class="card c3">
+    <div class="glow"></div>
+    <div class="content">
+      <div class="day-line">DAY 001 · 分工方式</div>
+      <div class="emoji-big">🤖</div>
+      <div class="big-quote">我负责<span class="accent">想</span><br/>AI负责<span class="accent">做</span></div>
+      <div class="three-line">
+        <div class="tl-item"><div class="dot"></div>我负责想要什么</div>
+        <div class="tl-item"><div class="dot"></div>AI负责执行</div>
+        <div class="tl-item"><div class="dot"></div>我负责判断好不好</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第4张：过程（加真实感）===== -->
+<div class="card-wrapper">
+  <div class="card-label">第4张 · 过程</div>
+  <div class="card c4">
+    <div class="header">
+      <div class="h-day">DAY 001 · 全程实录</div>
+      <div class="h-title">我是怎么<br/>把网站搞上线的</div>
+      <span class="real-tag">⚡ 中途报错3次，全让AI修好了</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">跟AI说我要什么</div>
+          <div class="step-desc">纯大白话，没用任何专业词</div>
+          <span class="step-result">✓ 3个文件建好了</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">AI帮我装上传工具</div>
+          <div class="step-desc">我唯一做的：复制粘贴错误信息给AI</div>
+          <span class="step-warn">⚠ 报错了→发给AI→修好继续</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">登录GitHub + 邮箱验证</div>
+          <div class="step-desc">这是今天唯一需要自己做的一步</div>
+          <span class="step-result">✓ 授权完成</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">AI一键上线</div>
+          <div class="step-desc">我盯着屏幕，啥都没做</div>
+          <span class="step-result">✓ 上线了！</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第5张：成果（红圈留言板）===== -->
+<div class="card-wrapper">
+  <div class="card-label">第5张 · 成果</div>
+  <div class="card c5">
+    <div class="content">
+      <div class="day-line">DAY 001 · 上线成功 🎉</div>
+      <div class="title">真实的网站<br/>出现在了<span>浏览器</span>里</div>
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="dots">
+            <div class="dot r"></div>
+            <div class="dot y"></div>
+            <div class="dot g"></div>
+          </div>
+          <div class="url">nihao7123.github.io/ai-moyu-site/</div>
+        </div>
+        <div class="browser-body">
+          <div class="mock-nav">
+            <div class="mock-logo">🐟</div>
+            <div>
+              <div class="mock-site-name">用AI摸鱼的人</div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-badge">DAY 001</div>
+            <div class="mock-title">从零开始：我让AI帮我建了一个网站</div>
+            <div class="mock-line w80"></div>
+            <div class="mock-line w60"></div>
+          </div>
+          <div style="position:relative; margin-top: 8px;">
+            <div class="mock-comment">
+              <div class="mock-comment-icon">💬</div>
+              <div class="mock-comment-text">留言区 · 用GitHub账号即可留言</div>
+            </div>
+            <div class="red-ring"></div>
+            <div class="red-label">← 这个！</div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-url">nihao7123.github.io/ai-moyu-site/</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第6张：留言板三角恋 ===== -->
+<div class="card-wrapper">
+  <div class="card-label">第6张 · 今日名场面</div>
+  <div class="card c6">
+    <div class="content">
+      <div class="day-line">DAY 001 · 名场面</div>
+      <div class="tag">⚡ 今天踩了什么坑</div>
+      <div class="title">留言板的<br/>三角恋故事</div>
+      <div class="drama">
+        <div class="d-item">
+          <span class="d-icon">1️⃣</span>
+          <div class="d-text">先装了 <strong>Giscus</strong>（GitHub留言板）</div>
+        </div>
+        <div class="d-item">
+          <span class="d-icon">2️⃣</span>
+          <div class="d-text">我看别人用 <strong>Disqus</strong> 更好看，要换！</div>
+        </div>
+        <div class="d-item">
+          <span class="d-icon">3️⃣</span>
+          <div class="d-text">换完我问：<strong>国内能用吗？</strong></div>
+        </div>
+        <div class="d-item">
+          <span class="d-icon">💀</span>
+          <div class="d-text">AI：Disqus在国内……<span class="hl">经常被墙</span></div>
+        </div>
+        <div class="d-item">
+          <span class="d-icon">✅</span>
+          <div class="d-text">分析用户群体后：<strong>换回Giscus</strong></div>
+        </div>
+      </div>
+      <div class="verdict">这叫「产品思维」<br/>不是乱折腾，是在替用户想</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第7张：接地气知识卡 ===== -->
+<div class="card-wrapper">
+  <div class="card-label">第7张 · 今天搞懂了</div>
+  <div class="card c7">
+    <div class="content">
+      <div class="day-line">DAY 001 · 今天搞懂了</div>
+      <div class="title">不用懂技术<br/>只需要知道是什么</div>
+      <div class="subtitle">（普通人版解释）</div>
+      <div class="cards">
+        <div class="kc">
+          <div class="kc-icon">☁️</div>
+          <div class="kc-body">
+            <div class="kc-term">GitHub</div>
+            <div class="kc-def">= <b>专业云盘</b>，存你的网站文件</div>
+          </div>
+        </div>
+        <div class="kc">
+          <div class="kc-icon">🌐</div>
+          <div class="kc-body">
+            <div class="kc-term">GitHub Pages</div>
+            <div class="kc-def">= <b>免费把文件变成网站</b>，有网址</div>
+          </div>
+        </div>
+        <div class="kc">
+          <div class="kc-icon">💬</div>
+          <div class="kc-body">
+            <div class="kc-term">Giscus</div>
+            <div class="kc-def">= <b>留言板</b>，国内能用，永久保存</div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-note">以上都是AI教我的<br/>我只是听懂了，然后记在这里</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第8张：金句（真实版）===== -->
+<div class="card-wrapper">
+  <div class="card-label">第8张 · 今天的感悟</div>
+  <div class="card c8">
+    <div class="top-bar"></div>
+    <div class="content">
+      <div class="day-line">DAY 001 · 今天的事实</div>
+      <div class="quote">
+        今天之前<br/>
+        我<span class="accent">没有</span>网站<br/><br/>
+        今天之后<br/>
+        我<span class="accent">有</span>网站
+      </div>
+      <div class="divider"></div>
+      <div class="sub">就这样。</div>
+      <div class="day-counter">DAY 001 / ∞ · 明天继续</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第9张：明日预告 ===== -->
+<div class="card-wrapper">
+  <div class="card-label">第9张 · 关注引导</div>
+  <div class="card c9">
+    <div class="content">
+      <div class="day-line">DAY 001 · 看完了？</div>
+      <div class="title">明天<span>DAY 002</span><br/>网站要进化了</div>
+      <div class="preview-label">📺 明日真实计划</div>
+      <div class="preview-list">
+        <div class="p-item">
+          <span class="p-icon">🎨</span>
+          <div class="p-text"><strong>背景升级</strong> · 让网站看起来更专业</div>
+        </div>
+        <div class="p-item">
+          <span class="p-icon">📱</span>
+          <div class="p-text"><strong>加小红书入口</strong> · 两个平台打通</div>
+        </div>
+        <div class="p-item">
+          <span class="p-icon">💬</span>
+          <div class="p-text"><strong>你留言，我实现</strong> · 去网站说想要什么</div>
+        </div>
+      </div>
+      <div class="cta-box">
+        <div class="cta-main">DAY 002 预告 🐟</div>
+        <div class="cta-sub">我要给网站装一个AI<br/><br/>明天见</div>
+      </div>
+      <div class="url-hint">nihao7123.github.io/ai-moyu-site/</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
