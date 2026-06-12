@@ -26,76 +26,166 @@
     </nav>
   </header>
 
-  <main>
-    <section class="intro-banner">
-      <p>📌 我不是AI专家，我只是一个普通人，决定用AI帮自己做点有意思的事情。这里记录我每天学到什么、搞砸了什么、以及怎么让AI帮我收拾烂摊子。</p>
-      <div class="intro-list">
-        <p>我每天记录：</p>
-        <ol>
-          <li>今天学了什么AI工具，怎么用</li>
-          <li>我怎么用AI做出一个小东西（附真实过程）</li>
-          <li>普通人能不能靠AI提高效率——我来验证</li>
-        </ol>
+  <!-- 主页用两栏布局，覆盖 main 的默认宽度 -->
+  <div class="page-grid">
+
+    <!-- ===== 左栏：文章列表 + 留言板 ===== -->
+    <div class="main-col">
+
+      <section class="intro-banner">
+        <p>📌 我不是AI专家，我只是一个普通人，决定用AI帮自己做点有意思的事情。这里记录我每天学到什么、搞砸了什么、以及怎么让AI帮我收拾烂摊子。</p>
+        <div class="intro-list">
+          <p>我每天记录：</p>
+          <ol>
+            <li>今天学了什么AI工具，怎么用</li>
+            <li>我怎么用AI做出一个小东西（附真实过程）</li>
+            <li>普通人能不能靠AI提高效率——我来验证</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="posts">
+        <h2 class="section-title">学习日志</h2>
+
+        <article class="post-card" onclick="window.location='day003.html'" style="border-color:rgba(255,107,53,0.4);box-shadow:0 4px 24px rgba(255,107,53,0.1);">
+          <div class="post-meta">
+            <span class="day-badge">DAY 003</span>
+            <span class="date">2026-06-12</span>
+            <span style="background:#ff6b35;color:white;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:4px;">NEW</span>
+          </div>
+          <h3 class="post-title">我让AI把网站整容了</h3>
+          <p class="post-excerpt">从"2004年白色博客"变成深色科技风。我一行CSS都不会改，全部靠AI。住院第5天，闲的。</p>
+          <div class="post-tags">
+            <span class="tag">网站改版</span>
+            <span class="tag">深色主题</span>
+            <span class="tag">纯AI操刀</span>
+          </div>
+          <span class="read-more">看看改了什么 →</span>
+        </article>
+
+        <article class="post-card" onclick="window.location='day002.html'">
+          <div class="post-meta">
+            <span class="day-badge">DAY 002</span>
+            <span class="date">2026-06-11</span>
+          </div>
+          <h3 class="post-title">我给自己的网站装了一个AI分身</h3>
+          <p class="post-excerpt">它会用我的口吻回答问题。你现在就可以跟它聊——关于AI学习、普通人能用AI做什么、或者随便什么。</p>
+          <div class="post-tags">
+            <span class="tag">AI对话</span>
+            <span class="tag">AI分身</span>
+            <span class="tag">免费实现</span>
+          </div>
+          <span class="read-more">进去聊聊 →</span>
+        </article>
+
+        <article class="post-card" onclick="window.location='day001.html'">
+          <div class="post-meta">
+            <span class="day-badge">DAY 001</span>
+            <span class="date">2026-06-10</span>
+          </div>
+          <h3 class="post-title">从零开始：我让AI帮我建了一个网站</h3>
+          <p class="post-excerpt">今天是第一天。我什么都不会，但我跟AI说了我想做什么——它真的帮我做出来了。这个网站本身，就是今天的作业。</p>
+          <div class="post-tags">
+            <span class="tag">建网站</span>
+            <span class="tag">Claude</span>
+            <span class="tag">第一次</span>
+          </div>
+          <span class="read-more">阅读全文 →</span>
+        </article>
+      </section>
+
+      <!-- 留言板 -->
+      <section class="guestbook">
+        <h2 class="guestbook-title">留言板</h2>
+        <p class="guestbook-desc">你想让下一期做什么？或者有什么想说的——都留在这里，我会看的。</p>
+        <script src="https://giscus.app/client.js"
+          data-repo="nihao7123/ai-moyu-site"
+          data-repo-id="R_kgDOS14L6A"
+          data-category="General"
+          data-category-id="DIC_kwDOS14L6M4C-2f7"
+          data-mapping="specific"
+          data-term="homepage-guestbook"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="dark"
+          data-lang="zh-CN"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </section>
+    </div>
+
+    <!-- ===== 右栏：侧边栏 ===== -->
+    <aside class="sidebar">
+
+      <!-- AI 聊天小部件 -->
+      <div class="sw">
+        <div class="sw-ai-header">
+          <div class="sw-av">🐟</div>
+          <div>
+            <div class="sw-name">摸鱼AI</div>
+            <div class="sw-desc">问我什么都行</div>
+          </div>
+          <div class="sw-online">
+            <span class="live-dot"></span>
+            在线
+          </div>
+        </div>
+        <div class="sw-msgs" id="sw-msgs">
+          <div class="sw-msg">
+            <div class="sw-mav bot">🤖</div>
+            <div class="sw-bbl bot">你好！我是摸鱼AI。主人37岁开始学AI，0代码经验，我帮他做东西。有什么想问的？🐟</div>
+          </div>
+        </div>
+        <div class="sw-suggestions" id="sw-sugs">
+          <button class="sw-sug" onclick="swAsk(this)">建网站要多少钱？</button>
+          <button class="sw-sug" onclick="swAsk(this)">我也想学AI怎么开始？</button>
+          <button class="sw-sug" onclick="swAsk(this)">你是什么AI？</button>
+        </div>
+        <div class="sw-input-row">
+          <input class="sw-inp" id="sw-inp" type="text" placeholder="有什么想问的？" onkeydown="if(event.key==='Enter')swSend()"/>
+          <button class="sw-send" id="sw-btn" onclick="swSend()">↑</button>
+        </div>
       </div>
-    </section>
 
-    <section class="posts">
-      <h2 class="section-title">学习日志</h2>
+      <!-- 站点数据 -->
+      <div class="sw">
+        <div class="sw-stats">
+          <div class="sw-stats-title">站点数据</div>
+          <div class="sw-stat-row">
+            <span class="sw-stat-label">连续更新</span>
+            <span class="sw-stat-val accent">3 天</span>
+          </div>
+          <div class="sw-stat-row">
+            <span class="sw-stat-label">今日访客</span>
+            <span class="sw-stat-val" id="sc-visit">加载中…</span>
+          </div>
+          <div class="sw-stat-row">
+            <span class="sw-stat-label">文章总数</span>
+            <span class="sw-stat-val">3 篇</span>
+          </div>
+          <div class="sw-stat-row">
+            <span class="sw-stat-label">博主状态</span>
+            <span class="sw-stat-val">🏥 住院中 · 仍在更新</span>
+          </div>
+        </div>
+      </div>
 
-      <article class="post-card" onclick="window.location='day003.html'" style="border-color:rgba(255,107,53,0.4);box-shadow:0 4px 24px rgba(255,107,53,0.1);">
-        <div class="post-meta">
-          <span class="day-badge">DAY 003</span>
-          <span class="date">2026-06-12</span>
-          <span style="background:#ff6b35;color:white;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:4px;">NEW</span>
+      <!-- 作者卡片 -->
+      <div class="sw">
+        <div class="sw-author">
+          <div class="sw-author-av">🐟</div>
+          <div class="sw-author-name">用AI摸鱼的人</div>
+          <div class="sw-author-bio">37岁 · SAP顾问 · 在日本<br/>0编程经验 · 2026年6月开始学AI<br/>每天用AI做一个东西</div>
+          <a href="about.html" class="sw-author-link">了解更多 →</a>
         </div>
-        <h3 class="post-title">我让AI把网站整容了</h3>
-        <p class="post-excerpt">
-          从"2004年白色博客"变成深色科技风。我一行CSS都不会改，全部靠AI。住院第5天，闲的。
-        </p>
-        <div class="post-tags">
-          <span class="tag">网站改版</span>
-          <span class="tag">深色主题</span>
-          <span class="tag">纯AI操刀</span>
-        </div>
-        <span class="read-more">看看改了什么 →</span>
-      </article>
+      </div>
 
-      <article class="post-card" onclick="window.location='day002.html'">
-        <div class="post-meta">
-          <span class="day-badge">DAY 002</span>
-          <span class="date">2026-06-11</span>
-        </div>
-        <h3 class="post-title">我给自己的网站装了一个AI分身</h3>
-        <p class="post-excerpt">
-          它会用我的口吻回答问题。你现在就可以跟它聊——关于AI学习、普通人能用AI做什么、或者随便什么。
-        </p>
-        <div class="post-tags">
-          <span class="tag">AI对话</span>
-          <span class="tag">AI分身</span>
-          <span class="tag">免费实现</span>
-        </div>
-        <span class="read-more">进去聊聊 →</span>
-      </article>
-
-      <article class="post-card" onclick="window.location='day001.html'">
-        <div class="post-meta">
-          <span class="day-badge">DAY 001</span>
-          <span class="date">2026-06-10</span>
-        </div>
-        <h3 class="post-title">从零开始：我让AI帮我建了一个网站</h3>
-        <p class="post-excerpt">
-          今天是第一天。我什么都不会，但我跟AI说了我想做什么——它真的帮我做出来了。这个网站本身，就是今天的作业。
-        </p>
-        <div class="post-tags">
-          <span class="tag">建网站</span>
-          <span class="tag">Claude</span>
-          <span class="tag">第一次</span>
-        </div>
-        <span class="read-more">阅读全文 →</span>
-      </article>
-
-    </section>
-  </main>
+    </aside>
+  </div>
 
   <footer>
     <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
@@ -103,13 +193,89 @@
   </footer>
 
   <script>
+    // ===== 访客计数 =====
     fetch('https://api.counterapi.dev/v1/moyu-ai/site-visits/up')
       .then(r => r.json())
       .then(d => {
-        const el = document.getElementById('visit-count');
-        if (el && d.count) el.textContent = d.count.toLocaleString();
+        const n = d.count ? d.count.toLocaleString() : '--';
+        const el1 = document.getElementById('visit-count');
+        const el2 = document.getElementById('sc-visit');
+        if (el1) el1.textContent = n;
+        if (el2) el2.textContent = n + ' 人';
       })
-      .catch(() => {});
+      .catch(() => {
+        const el2 = document.getElementById('sc-visit');
+        if (el2) el2.textContent = '--';
+      });
+
+    // ===== 侧边栏 AI 聊天 =====
+    const SW_KEY = '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';
+    const SW_URL = 'https://api.groq.com/openai/v1/chat/completions';
+    const SW_SYS = `你是"摸鱼AI"，是"用AI摸鱼的人"网站的AI助手。
+主人37岁，SAP顾问，在日本上班，0编程经验，2026年6月开始用AI做东西，每天更新一篇日志。
+回答风格：简短、接地气、有点幽默，不说废话，不透露自己用的AI模型。鼓励普通人也能用AI。
+回答控制在3句话以内。`;
+
+    const swHistory = [];
+    const swMsgs = document.getElementById('sw-msgs');
+    const swInp = document.getElementById('sw-inp');
+    const swBtn = document.getElementById('sw-btn');
+
+    function swAddMsg(role, text) {
+      const isBot = role === 'bot';
+      const row = document.createElement('div');
+      row.className = 'sw-msg' + (isBot ? '' : ' u');
+      row.innerHTML = `
+        <div class="sw-mav ${isBot ? 'bot' : 'usr'}">${isBot ? '🤖' : '我'}</div>
+        <div class="sw-bbl ${isBot ? 'bot' : 'usr'}">${text}</div>`;
+      swMsgs.appendChild(row);
+      swMsgs.scrollTop = swMsgs.scrollHeight;
+      return row;
+    }
+
+    async function swSend() {
+      const text = swInp.value.trim();
+      if (!text) return;
+      swInp.value = '';
+      swBtn.disabled = true;
+      document.getElementById('sw-sugs').style.display = 'none';
+
+      swAddMsg('user', text);
+      swHistory.push({ role: 'user', content: text });
+
+      // 打字中
+      const typingRow = document.createElement('div');
+      typingRow.className = 'sw-msg';
+      typingRow.innerHTML = `<div class="sw-mav bot">🤖</div>
+        <div class="sw-typing"><div class="sw-dot"></div><div class="sw-dot"></div><div class="sw-dot"></div></div>`;
+      swMsgs.appendChild(typingRow);
+      swMsgs.scrollTop = swMsgs.scrollHeight;
+
+      try {
+        const res = await fetch(SW_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SW_KEY },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'system', content: SW_SYS }, ...swHistory]
+          })
+        });
+        const data = await res.json();
+        const reply = data.choices[0].message.content;
+        swHistory.push({ role: 'assistant', content: reply });
+        typingRow.remove();
+        swAddMsg('bot', reply);
+      } catch {
+        typingRow.remove();
+        swAddMsg('bot', '网络有点问题，稍后再试试？');
+      }
+      swBtn.disabled = false;
+    }
+
+    function swAsk(btn) {
+      swInp.value = btn.textContent;
+      swSend();
+    }
   </script>
 
 </body>
