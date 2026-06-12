@@ -30,12 +30,12 @@
 
     /* ===== AI 对话框 ===== */
     .ai-chat-section {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
       overflow: hidden;
       margin: 32px 0;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.4);
     }
     .ai-chat-header {
       background: linear-gradient(135deg, #1a1a2e, #0f3460);
@@ -95,8 +95,8 @@
       line-height: 1.75;
     }
     .msg.bot .msg-bubble {
-      background: #f8f9fa;
-      color: #1a1a1a;
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
       border-bottom-left-radius: 4px;
     }
     .msg.user .msg-bubble {
@@ -122,15 +122,15 @@
 
     .ai-input-area {
       padding: 16px 24px;
-      border-top: 1px solid #f3f4f6;
+      border-top: 1px solid rgba(255,255,255,0.07);
       display: flex;
       gap: 10px;
       align-items: flex-end;
-      background: #fafaf8;
+      background: rgba(0,0,0,0.2);
     }
     .ai-input-area textarea {
       flex: 1;
-      border: 1px solid #e5e7eb;
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 12px;
       padding: 10px 14px;
       font-family: inherit;
@@ -141,7 +141,10 @@
       outline: none;
       transition: border-color 0.2s;
       line-height: 1.5;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
     }
+    .ai-input-area textarea::placeholder { color: var(--text-muted); }
     .ai-input-area textarea:focus { border-color: #ff6b35; }
     .send-btn {
       width: 44px; height: 44px;
@@ -161,20 +164,20 @@
     }
     .sq-label { width: 100%; font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
     .sq-btn {
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
       padding: 6px 14px;
       font-size: 13px;
-      color: #374151;
+      color: var(--text-muted);
       cursor: pointer;
       font-family: inherit;
       transition: all 0.2s;
     }
-    .sq-btn:hover { background: #fff3ee; border-color: #ff6b35; color: #ff6b35; }
+    .sq-btn:hover { background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.4); color: #ff6b35; }
 
     /* ===== 文章正文样式 ===== */
-    .article-body p { margin-bottom: 18px; font-size: 15px; line-height: 1.9; color: #374151; }
+    .article-body p { margin-bottom: 18px; font-size: 15px; line-height: 1.9; color: var(--text); }
     .chapter {
       display: flex; align-items: center; gap: 12px;
       margin: 40px 0 16px;
@@ -184,7 +187,7 @@
       font-size: 11px; font-weight: 800;
       padding: 4px 10px; border-radius: 20px;
     }
-    .chapter h2 { font-size: 19px; font-weight: 800; color: #1a1a1a; margin: 0; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
 
     .knowledge-card {
       background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -220,8 +223,8 @@
     .ti-icon { font-size: 18px; }
 
     .quote-block { text-align: center; padding: 28px 20px; margin: 28px 0; }
-    .quote-block .quote-text { font-size: 20px; font-weight: 800; color: #1a1a1a; line-height: 1.5; margin-bottom: 10px; }
-    .quote-block .quote-sub { font-size: 13px; color: #9ca3af; }
+    .quote-block .quote-text { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.5; margin-bottom: 10px; }
+    .quote-block .quote-sub { font-size: 13px; color: var(--text-muted); }
   </style>
 </head>
 <body>
