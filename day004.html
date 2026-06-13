@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 004 · 用AI摸鱼的人</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner {
+      background: linear-gradient(135deg, #0a0f1a 0%, #0d1f35 50%, #0a1a12 100%);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 16px;
+      padding: 44px 32px;
+      margin-bottom: 40px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '📬';
+      position: absolute;
+      font-size: 140px;
+      opacity: 0.05;
+      right: -10px;
+      bottom: -20px;
+    }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.5; margin-bottom: 12px; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #4ade80; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.7; line-height: 1.7; }
+
+    .chapter {
+      display: flex; align-items: center; gap: 12px;
+      margin: 40px 0 16px;
+    }
+    .chapter-num {
+      background: #ff6b35; color: white;
+      font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 20px;
+    }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .chat-scene {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .chat-scene .scene-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .bubble-row { display: flex; margin-bottom: 14px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .av {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .av.me { background: #ff6b35; }
+    .av.ai { background: #1a1a2e; }
+    .bbl {
+      max-width: 78%; padding: 10px 14px;
+      border-radius: 14px; font-size: 14px; line-height: 1.7;
+    }
+    .bbl.me { background: #ff6b35; color: white; border-bottom-right-radius: 4px; }
+    .bbl.ai { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
+
+    /* 邮件展示 */
+    .email-preview {
+      background: #1a1f2e;
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 24px 0;
+    }
+    .email-topbar {
+      background: rgba(74,222,128,0.08);
+      border-bottom: 1px solid rgba(74,222,128,0.15);
+      padding: 10px 16px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: #4ade80; font-weight: 700;
+    }
+    .email-topbar::before { content: '📬'; }
+    .email-body { padding: 20px 24px; }
+    .email-field { display: flex; gap: 12px; margin-bottom: 8px; font-size: 13px; }
+    .email-field .f-label { color: var(--text-muted); width: 36px; flex-shrink: 0; }
+    .email-field .f-val { color: var(--text); }
+    .email-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 14px 0; }
+    .email-content { font-size: 14px; color: var(--text); line-height: 1.8; }
+    .email-content .rate-big {
+      font-size: 32px; font-weight: 900; color: #4ade80;
+      letter-spacing: -1px; margin: 10px 0 4px;
+    }
+    .email-content .rate-sub { font-size: 12px; color: var(--text-muted); }
+
+    /* 数字 */
+    .stat-row {
+      display: flex; gap: 12px; margin: 28px 0;
+    }
+    .stat-box {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 20px; text-align: center;
+    }
+    .stat-box .num { font-size: 32px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-box .label { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    /* 思考框 */
+    .think-box {
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .think-box.green {
+      background: rgba(74,222,128,0.06);
+      border: 1px solid rgba(74,222,128,0.2);
+      color: rgba(180,255,210,0.85);
+    }
+    .think-box.orange {
+      background: rgba(255,107,53,0.06);
+      border: 1px solid rgba(255,107,53,0.2);
+      color: rgba(255,195,155,0.85);
+    }
+    .think-box .think-label {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.12em; margin-bottom: 10px;
+      opacity: 0.6;
+    }
+
+    /* 对比：workflow vs 真正的AI */
+    .vs-wrap {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0;
+    }
+    .vs-box {
+      border-radius: 12px; padding: 20px;
+    }
+    .vs-box.workflow {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .vs-box.real {
+      background: rgba(255,107,53,0.06);
+      border: 1px solid rgba(255,107,53,0.2);
+    }
+    .vs-box .vs-title {
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 0.1em; margin-bottom: 12px;
+    }
+    .vs-box.workflow .vs-title { color: var(--text-muted); }
+    .vs-box.real .vs-title { color: #ff6b35; }
+    .vs-item {
+      font-size: 13px; color: var(--text-muted);
+      padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      line-height: 1.5;
+    }
+    .vs-item:last-child { border: none; }
+    .vs-item.yes { color: #4ade80; }
+
+    .tomorrow-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,107,53,0.2);
+      color: var(--text);
+      border-radius: 16px; padding: 28px; margin: 32px 0;
+    }
+    .tomorrow-card .label {
+      font-size: 11px; font-weight: 700; color: #ff6b35;
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;
+    }
+    .tomorrow-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 16px; line-height: 1.4; }
+    .tomorrow-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px; color: var(--text-muted);
+    }
+    .tomorrow-item:last-child { border: none; }
+    .ti-icon { font-size: 18px; }
+
+    p { margin-bottom: 18px; font-size: 15px; line-height: 1.9; color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+      <div class="header-live">
+        <span class="live-dot"></span>
+        LIVE
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-link">← 返回日志列表</a>
+
+    <div class="hero-banner">
+      <div class="episode">第四集 · 2026年6月13日</div>
+      <h1>AI第一次<br/>不等我开口，<span>自己去工作了</span></h1>
+      <p class="subtitle">每5分钟，它就发一封邮件来汇报日元汇率<br/>我什么都没做，它自己在跑</p>
+    </div>
+
+    <div class="article-body">
+
+      <div class="chapter">
+        <span class="chapter-num">01</span>
+        <h2>今天做了什么</h2>
+      </div>
+
+      <p>今天用Agent做了一个东西：每隔5分钟，自动抓取实时日元对美元汇率，然后给我发一封邮件汇报。</p>
+
+      <p>整个过程我不用动手。设置好之后，它就一直在跑。邮件一封一封地来，我只管看。</p>
+
+      <div class="email-preview">
+        <div class="email-topbar">自动邮件 · 每5分钟一封</div>
+        <div class="email-body">
+          <div class="email-field"><span class="f-label">发件人</span><span class="f-val">AI汇率助手</span></div>
+          <div class="email-field"><span class="f-label">主题</span><span class="f-val">【汇率播报】JPY/USD 实时更新</span></div>
+          <div class="email-field"><span class="f-label">时间</span><span class="f-val">2026-06-13 14:05:00（自动发送）</span></div>
+          <div class="email-divider"></div>
+          <div class="email-content">
+            当前汇率：<br/>
+            <div class="rate-big">1 USD = 157.43 JPY</div>
+            <div class="rate-sub">更新时间：14:05:00 · 下次播报：14:10:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="num">5</div>
+          <div class="label">分钟<br/>自动发一次</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">0</div>
+          <div class="label">次手动操作<br/>启动后</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">∞</div>
+          <div class="label">持续运行<br/>不需要我</div>
+        </div>
+      </div>
+
+      <div class="chapter">
+        <span class="chapter-num">02</span>
+        <h2>我是怎么搭的</h2>
+      </div>
+
+      <div class="chat-scene">
+        <div class="scene-label">实际对话</div>
+        <div class="bubble-row right">
+          <div class="av me">我</div>
+          <div class="bbl me">帮我做一个Agent，每5分钟自动查一次日元对美元的实时汇率，然后给我发邮件汇报。我不想每次都手动问。</div>
+        </div>
+        <div class="bubble-row">
+          <div class="av ai">🤖</div>
+          <div class="bbl ai">好，我来搭这个流程：定时触发 → 抓取汇率API → 格式化内容 → 发送邮件。你用哪个邮箱？SMTP还是用现成的邮件服务？</div>
+        </div>
+        <div class="bubble-row right">
+          <div class="av me">我</div>
+          <div class="bbl me">（给了邮箱信息）</div>
+        </div>
+        <div class="bubble-row">
+          <div class="av ai">🤖</div>
+          <div class="bbl ai">好，跑起来了。第一封邮件应该马上到你邮箱。</div>
+        </div>
+      </div>
+
+      <p>真的就来了。邮件出现在收件箱，是它自己发的，不是我触发的。</p>
+
+      <div class="chapter">
+        <span class="chapter-num">03</span>
+        <h2>这一步有什么不同</h2>
+      </div>
+
+      <p>前三天做的事，都是我说一句，AI干一件。有问有答，我主导。</p>
+
+      <p>今天第一次感觉有点不一样——<strong style="color:var(--text);">它在自己跑，不等我。</strong>我去吃饭，邮件来了。我去睡觉，邮件还在来。我什么都没做，它一直在工作。</p>
+
+      <div class="think-box green">
+        <div class="think-label">感受到的变化</div>
+        之前是：我发指令 → AI执行 → 结束。<br/>
+        现在是：我设置好 → AI自己跑 → 我只管接收结果。
+      </div>
+
+      <div class="chapter">
+        <span class="chapter-num">04</span>
+        <h2>但还差一截</h2>
+      </div>
+
+      <p>冷静下来想了想，这个东西本质上还是一个workflow——一个预设好的流程在循环执行。</p>
+
+      <div class="vs-wrap">
+        <div class="vs-box workflow">
+          <div class="vs-title">今天做的：WORKFLOW</div>
+          <div class="vs-item">每5分钟，固定执行一次</div>
+          <div class="vs-item">汇率不管高低，一律发邮件</div>
+          <div class="vs-item">不会判断"现在值不值得发"</div>
+          <div class="vs-item">不会自己调整频率</div>
+          <div class="vs-item">出错了，不会自己想办法</div>
+        </div>
+        <div class="vs-box real">
+          <div class="vs-title">真正的自主：还差这些</div>
+          <div class="vs-item">汇率剧烈波动 → 自己提高频率</div>
+          <div class="vs-item">连续3次没变化 → 自己暂停发送</div>
+          <div class="vs-item">判断信息是否有意义</div>
+          <div class="vs-item">根据结果调整下一步行动</div>
+          <div class="vs-item">遇到问题 → 自己解决</div>
+        </div>
+      </div>
+
+      <p>它现在做的事，更像一台定好闹钟的咖啡机——到点就启动，不会因为你今天不想喝咖啡就停下来。</p>
+
+      <div class="think-box orange">
+        <div class="think-label">我的理解</div>
+        Workflow = 预设指令的循环执行<br/>
+        真正的Agent = 能根据环境判断、自己决定下一步<br/><br/>
+        今天做到了第一步，距离第二步，还有很长的路。
+      </div>
+
+      <div class="chapter">
+        <span class="chapter-num">05</span>
+        <h2>感受</h2>
+      </div>
+
+      <p>但就算只是workflow，也比我想象中厉害。</p>
+
+      <p>以前我觉得"自动化"是那种需要懂编程才能碰的事——定时任务、cron、API、邮件服务，每一个拿出来都能劝退我。今天这些东西都跑起来了，我没有自己写一行。</p>
+
+      <p>它现在还不是"真正在思考的AI"。但是一个普通人，用AI搭起一个自动跑的workflow，这件事本身在三年前就已经不可能了。</p>
+
+      <blockquote>
+        从"AI回答我的问题"，到"AI主动做事给我看"——这一步，比我以为的走得快。
+      </blockquote>
+
+      <div class="tomorrow-card">
+        <div class="label">DAY 005 方向</div>
+        <h3>让Agent更聪明一点</h3>
+        <div class="tomorrow-item"><span class="ti-icon">🧠</span> 加入判断逻辑：只在汇率波动时才发邮件</div>
+        <div class="tomorrow-item"><span class="ti-icon">📊</span> 或者换个方向：AI帮我自动整理每天的工作</div>
+        <div class="tomorrow-item"><span class="ti-icon">❓</span> 还没决定，看今天有什么想法</div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
