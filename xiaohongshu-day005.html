@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>小红书图片 · Day005</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #111;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  }
+  .label { color: #888; font-size: 12px; text-align: center; margin-bottom: 8px; }
+
+  /* ===== CARD BASE ===== */
+  .card {
+    width: 480px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ===== CARD 1: COVER ===== */
+  .card1 {
+    background: #060d1a;
+    border: 1px solid rgba(99,179,237,0.25);
+    padding: 44px 36px 40px;
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card1::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(99,179,237,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(30,80,180,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .c1-top {}
+  .c1-series {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.25);
+    border-radius: 24px;
+    padding: 5px 14px;
+    margin-bottom: 28px;
+  }
+  .c1-series-dot { width: 6px; height: 6px; border-radius: 50%; background: #63b3ed; }
+  .c1-series-text { font-size: 11px; font-weight: 700; color: #63b3ed; letter-spacing: 0.1em; }
+  .c1-title {
+    font-size: 36px; font-weight: 900; color: white;
+    line-height: 1.25; margin-bottom: 18px;
+  }
+  .c1-title span { color: #63b3ed; }
+  .c1-subtitle {
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    line-height: 1.7; margin-bottom: 36px;
+  }
+  .c1-stats {
+    display: flex; gap: 12px;
+  }
+  .c1-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .c1-stat-num { font-size: 24px; font-weight: 900; color: #63b3ed; line-height: 1; margin-bottom: 5px; }
+  .c1-stat-label { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.4; }
+  .c1-bottom {}
+  .c1-alerts {
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px;
+  }
+  .c1-alert {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 10px;
+    font-size: 13px;
+  }
+  .c1-alert.red { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.25); }
+  .c1-alert.yellow { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.22); }
+  .c1-alert.green { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.18); }
+  .c1-alert .icon { font-size: 16px; }
+  .c1-alert .range { font-weight: 800; font-size: 12px; min-width: 60px; }
+  .c1-alert.red .range { color: #f87171; }
+  .c1-alert.yellow .range { color: #fbbf24; }
+  .c1-alert.green .range { color: #4ade80; }
+  .c1-alert .desc { color: rgba(255,255,255,0.5); font-size: 12px; }
+  .c1-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .c1-account { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .c1-day { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+  /* ===== CARD 2: PROCESS ===== */
+  .card2 {
+    background: #07101e;
+    border: 1px solid rgba(99,179,237,0.2);
+    padding: 36px;
+    min-height: 680px;
+  }
+  .c2-header { margin-bottom: 28px; }
+  .c2-tag {
+    display: inline-block;
+    background: rgba(99,179,237,0.12);
+    border: 1px solid rgba(99,179,237,0.25);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 10px; font-weight: 800; color: #63b3ed;
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .c2-title { font-size: 22px; font-weight: 900; color: white; line-height: 1.35; }
+  .c2-agent {
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .c2-agent.daily {
+    background: rgba(30,60,120,0.3);
+    border: 1px solid rgba(99,179,237,0.25);
+  }
+  .c2-agent.realtime {
+    background: rgba(120,30,30,0.3);
+    border: 1px solid rgba(220,38,38,0.25);
+  }
+  .c2-agent-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .c2-agent-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .daily .c2-agent-icon { background: rgba(99,179,237,0.15); }
+  .realtime .c2-agent-icon { background: rgba(220,38,38,0.15); }
+  .c2-agent-name { font-size: 15px; font-weight: 800; color: white; }
+  .c2-agent-time { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+  .c2-agent-items { display: flex; flex-direction: column; gap: 7px; }
+  .c2-agent-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.5;
+  }
+  .c2-agent-item span { flex-shrink: 0; font-size: 14px; }
+  .c2-divider {
+    text-align: center; padding: 10px 0; margin-bottom: 10px;
+  }
+  .c2-divider-line {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .c2-divider-rule { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+  .c2-divider-text { font-size: 11px; color: rgba(255,255,255,0.3); white-space: nowrap; }
+  .c2-threshold-title {
+    font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .c2-thresholds { display: flex; flex-direction: column; gap: 7px; }
+  .c2-thresh {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 9px;
+  }
+  .c2-thresh.t-red { background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.2); }
+  .c2-thresh.t-yellow { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); }
+  .c2-thresh.t-green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.15); }
+  .c2-thresh .te { font-size: 15px; flex-shrink: 0; }
+  .c2-thresh .tp { font-size: 12px; font-weight: 800; min-width: 55px; }
+  .c2-thresh.t-red .tp { color: #f87171; }
+  .c2-thresh.t-yellow .tp { color: #fbbf24; }
+  .c2-thresh.t-green .tp { color: #4ade80; }
+  .c2-thresh .td { font-size: 11px; color: rgba(255,255,255,0.45); }
+  .c2-footer {
+    margin-top: 20px; padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: rgba(255,255,255,0.25);
+  }
+
+  /* ===== CARD 3: RESULT ===== */
+  .card3 {
+    background: #060e1a;
+    border: 1px solid rgba(74,222,128,0.2);
+    padding: 36px;
+    min-height: 640px;
+  }
+  .c3-header { margin-bottom: 28px; }
+  .c3-tag {
+    display: inline-block;
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 10px; font-weight: 800; color: #4ade80;
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .c3-title { font-size: 22px; font-weight: 900; color: white; line-height: 1.35; }
+  .c3-inbox {
+    background: #0e1825;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .c3-inbox-top {
+    background: rgba(255,255,255,0.04);
+    padding: 9px 14px;
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.35);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .c3-inbox-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .c3-email {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .c3-email:last-child { border: none; }
+  .c3-email-indicator {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+  }
+  .c3-email-indicator.red { background: #f87171; }
+  .c3-email-indicator.yellow { background: #fbbf24; }
+  .c3-email-indicator.green { background: #4ade80; }
+  .c3-email-subject { font-size: 12px; font-weight: 700; color: white; margin-bottom: 3px; }
+  .c3-email-preview { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.4; }
+  .c3-highlight {
+    background: rgba(74,222,128,0.07);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 12px; padding: 18px;
+    margin-bottom: 20px;
+  }
+  .c3-hl-date { font-size: 10px; font-weight: 700; color: rgba(74,222,128,0.7); letter-spacing: 0.08em; margin-bottom: 8px; }
+  .c3-hl-title { font-size: 13px; font-weight: 800; color: white; margin-bottom: 6px; }
+  .c3-hl-body { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+  .c3-hl-body strong { color: #4ade80; }
+  .c3-quote {
+    font-size: 15px; font-weight: 800;
+    color: white; line-height: 1.6;
+    padding-left: 14px;
+    border-left: 3px solid #63b3ed;
+    margin-bottom: 20px;
+  }
+  .c3-quote span { color: #63b3ed; }
+  .c3-footer {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: rgba(255,255,255,0.25);
+  }
+</style>
+</head>
+<body>
+
+  <div class="label">📱 图1：封面图 · 截图时取这张</div>
+  <div class="card card1">
+    <div class="c1-top">
+      <div class="c1-series">
+        <div class="c1-series-dot"></div>
+        <span class="c1-series-text">学AI第5天 · DAY 005</span>
+      </div>
+      <div class="c1-title">AI开始帮我<br/><span>盯股票</span>了</div>
+      <div class="c1-subtitle">
+        持仓铠侠(285A) 20股 + 英伟达 5股<br/>
+        两个Agent，一个发日报，一个实时盯盘<br/>
+        急涨急跌第一时间邮件通知我
+      </div>
+      <div class="c1-stats">
+        <div class="c1-stat">
+          <div class="c1-stat-num">2</div>
+          <div class="c1-stat-label">个Agent<br/>同时运行</div>
+        </div>
+        <div class="c1-stat">
+          <div class="c1-stat-num">8AM</div>
+          <div class="c1-stat-label">每天<br/>准时日报</div>
+        </div>
+        <div class="c1-stat">
+          <div class="c1-stat-num">5分</div>
+          <div class="c1-stat-label">实时监控<br/>间隔</div>
+        </div>
+      </div>
+    </div>
+    <div class="c1-bottom">
+      <div class="c1-alerts">
+        <div class="c1-alert red">
+          <span class="icon">🔴</span>
+          <span class="range">≥ ±7%</span>
+          <span class="desc">紧急预警，立刻发邮件</span>
+        </div>
+        <div class="c1-alert yellow">
+          <span class="icon">🟡</span>
+          <span class="range">±4%~7%</span>
+          <span class="desc">注意预警，建议关注</span>
+        </div>
+        <div class="c1-alert green">
+          <span class="icon">🟢</span>
+          <span class="range">&lt; ±4%</span>
+          <span class="desc">正常范围，静默监控</span>
+        </div>
+      </div>
+      <div class="c1-footer">
+        <span class="c1-account">用AI摸鱼的人</span>
+        <span class="c1-day">2026.06.14</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="label">📱 图2：过程图 · 两个Agent详解</div>
+  <div class="card card2">
+    <div class="c2-header">
+      <div class="c2-tag">HOW IT WORKS</div>
+      <div class="c2-title">两个Agent，分工<br/>明确，全天候运行</div>
+    </div>
+
+    <div class="c2-agent daily">
+      <div class="c2-agent-head">
+        <div class="c2-agent-icon">📊</div>
+        <div>
+          <div class="c2-agent-name">半导体日报 Agent</div>
+          <div class="c2-agent-time">每天 8:00 AM 自动触发</div>
+        </div>
+      </div>
+      <div class="c2-agent-items">
+        <div class="c2-agent-item"><span>🔍</span>搜索昨晚美股收盘 + 半导体新闻</div>
+        <div class="c2-agent-item"><span>📈</span>抓取英伟达NVDA + SOXX ETF数据</div>
+        <div class="c2-agent-item"><span>🤖</span>AI分析对铠侠和英伟达的影响</div>
+        <div class="c2-agent-item"><span>📧</span>邮件直达Gmail，含今日买卖建议</div>
+      </div>
+    </div>
+
+    <div class="c2-divider">
+      <div class="c2-divider-line">
+        <div class="c2-divider-rule"></div>
+        <div class="c2-divider-text">交易时段另外运行</div>
+        <div class="c2-divider-rule"></div>
+      </div>
+    </div>
+
+    <div class="c2-agent realtime">
+      <div class="c2-agent-head">
+        <div class="c2-agent-icon">🚨</div>
+        <div>
+          <div class="c2-agent-name">铠侠实时监控 Agent</div>
+          <div class="c2-agent-time">9:00~15:30 JST · 每5分钟检查一次</div>
+        </div>
+      </div>
+      <div class="c2-agent-items">
+        <div class="c2-agent-item"><span>💹</span>实时获取285A当前价格</div>
+        <div class="c2-agent-item"><span>📐</span>计算相对开盘价涨跌幅</div>
+        <div class="c2-agent-item"><span>⚡</span>超过阈值立刻发预警邮件</div>
+        <div class="c2-agent-item"><span>🛡</span>30分钟防重复，不刷屏</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 18px;">
+      <div class="c2-threshold-title">预警三级阈值（基于历史波动数据）</div>
+      <div class="c2-thresholds">
+        <div class="c2-thresh t-red">
+          <span class="te">🔴</span>
+          <span class="tp">≥ ±7%</span>
+          <span class="td">紧急 — 历史最大振幅±12%</span>
+        </div>
+        <div class="c2-thresh t-yellow">
+          <span class="te">🟡</span>
+          <span class="tp">±4%~7%</span>
+          <span class="td">注意 — 超过正常波动1.5倍</span>
+        </div>
+        <div class="c2-thresh t-green">
+          <span class="te">🟢</span>
+          <span class="tp">&lt; ±4%</span>
+          <span class="td">正常 — 日常±2~3%范围</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="c2-footer">
+      <span>用AI摸鱼的人</span>
+      <span>Day 005 · 2026.06.14</span>
+    </div>
+  </div>
+
+  <div class="label">📱 图3：结果图 · 这就是效果</div>
+  <div class="card card3">
+    <div class="c3-header">
+      <div class="c3-tag">RESULT · 效果</div>
+      <div class="c3-title">不用盯手机了，<br/>AI盯着就行</div>
+    </div>
+
+    <div class="c3-inbox">
+      <div class="c3-inbox-top">
+        <div class="c3-inbox-dot" style="background:#4ade80;"></div>
+        Gmail 收件箱 · 模拟示例
+      </div>
+      <div class="c3-email">
+        <div class="c3-email-indicator red"></div>
+        <div>
+          <div class="c3-email-subject">🔴 [铠侠(285A) -7.3%] 急跌预警！立即查看！</div>
+          <div class="c3-email-preview">当前¥75,260 / 今日持仓浮亏变动约 ¥118,800 · 建议立即查看行情</div>
+        </div>
+      </div>
+      <div class="c3-email">
+        <div class="c3-email-indicator yellow"></div>
+        <div>
+          <div class="c3-email-subject">🟡 [铠侠(285A) +4.8%] 急涨预警！建议关注</div>
+          <div class="c3-email-preview">当前¥85,100 / 可考虑是否到了获利了结的时机</div>
+        </div>
+      </div>
+      <div class="c3-email">
+        <div class="c3-email-indicator green"></div>
+        <div>
+          <div class="c3-email-subject">🟢 [半导体日报] 铠侠・英伟达 — 2026-06-16</div>
+          <div class="c3-email-preview">建议：铠侠持有 / 英伟达持有 | SOXX -0.8% | 无重大消息</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="c3-highlight">
+      <div class="c3-hl-date">验证：6月12日（金曜日）实际数据</div>
+      <div class="c3-hl-title">铠侠当天涨了 +7.64%</div>
+      <div class="c3-hl-body">
+        超过紧急阈值 ±7%。<br/>
+        如果Agent当天已运行，我应该会收到<strong>🔴 紧急预警邮件</strong>。<br/>
+        20股单日浮盈变动约 <strong>¥115,200</strong>。
+      </div>
+    </div>
+
+    <div class="c3-quote">
+      等我看到新闻已经晚了。<br/>
+      现在<span>AI替我盯着</span>，该动的时候通知我。
+    </div>
+
+    <div class="c3-footer">
+      <span>用AI摸鱼的人</span>
+      <span>Day 005 · 2026.06.14</span>
+    </div>
+  </div>
+
+</body>
+</html>

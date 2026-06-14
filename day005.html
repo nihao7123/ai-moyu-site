@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 005 · AI开始帮我盯股票了</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner {
+      background: linear-gradient(135deg, #0a0f1a 0%, #0d1a35 50%, #0a0f2a 100%);
+      border: 1px solid rgba(99,179,237,0.2);
+      border-radius: 16px;
+      padding: 44px 32px;
+      margin-bottom: 40px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '📈';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.06;
+      right: -10px;
+      bottom: -20px;
+    }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.5; margin-bottom: 12px; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #63b3ed; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.7; line-height: 1.7; }
+
+    .chapter {
+      display: flex; align-items: center; gap: 12px;
+      margin: 40px 0 16px;
+    }
+    .chapter-num {
+      background: #3b82f6; color: white;
+      font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 20px;
+    }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .chat-scene {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .chat-scene .scene-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .bubble-row { display: flex; margin-bottom: 14px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .av {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .av.me { background: #3b82f6; }
+    .av.ai { background: #1a1a2e; }
+    .bbl {
+      max-width: 78%; padding: 10px 14px;
+      border-radius: 14px; font-size: 14px; line-height: 1.7;
+    }
+    .bbl.me { background: #3b82f6; color: white; border-bottom-right-radius: 4px; }
+    .bbl.ai { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
+
+    /* 邮件预警样式 */
+    .alert-card {
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .alert-card.red {
+      background: rgba(220,38,38,0.08);
+      border: 1px solid rgba(220,38,38,0.3);
+    }
+    .alert-card.yellow {
+      background: rgba(234,179,8,0.08);
+      border: 1px solid rgba(234,179,8,0.3);
+    }
+    .alert-card.green {
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+    }
+    .alert-topbar {
+      padding: 8px 16px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+    }
+    .alert-card.red .alert-topbar { background: rgba(220,38,38,0.15); color: #f87171; }
+    .alert-card.yellow .alert-topbar { background: rgba(234,179,8,0.15); color: #fbbf24; }
+    .alert-card.green .alert-topbar { background: rgba(74,222,128,0.1); color: #4ade80; }
+    .alert-body { padding: 16px 20px; }
+    .alert-subject { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .alert-preview { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* 统计数字 */
+    .stat-row {
+      display: flex; gap: 12px; margin: 28px 0;
+    }
+    .stat-box {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 20px; text-align: center;
+    }
+    .stat-box .num { font-size: 32px; font-weight: 900; color: #63b3ed; line-height: 1; margin-bottom: 6px; }
+    .stat-box .label { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    /* 思考框 */
+    .think-box {
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .think-box.blue {
+      background: rgba(99,179,237,0.06);
+      border: 1px solid rgba(99,179,237,0.2);
+      color: rgba(180,220,255,0.85);
+    }
+    .think-box.orange {
+      background: rgba(255,107,53,0.06);
+      border: 1px solid rgba(255,107,53,0.2);
+      color: rgba(255,195,155,0.85);
+    }
+    .think-box .think-label {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.12em; margin-bottom: 10px;
+      opacity: 0.6;
+    }
+
+    /* 两个Agent对比 */
+    .agent-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0;
+    }
+    .agent-box {
+      border-radius: 12px; padding: 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .agent-box .agent-badge {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.1em; padding: 3px 10px;
+      border-radius: 20px; display: inline-block;
+      margin-bottom: 12px;
+    }
+    .agent-box.daily .agent-badge { background: rgba(99,179,237,0.15); color: #63b3ed; }
+    .agent-box.realtime .agent-badge { background: rgba(220,38,38,0.15); color: #f87171; }
+    .agent-box h4 { font-size: 14px; font-weight: 800; color: var(--text); margin: 0 0 10px; }
+    .agent-item {
+      font-size: 12px; color: var(--text-muted);
+      padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; gap: 8px; align-items: flex-start; line-height: 1.5;
+    }
+    .agent-item:last-child { border: none; }
+    .agent-item span { flex-shrink: 0; }
+
+    /* 阈值展示 */
+    .threshold-row {
+      display: flex; flex-direction: column; gap: 8px; margin: 20px 0;
+    }
+    .threshold-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px; border-radius: 10px;
+      font-size: 13px;
+    }
+    .threshold-item.t-red { background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.2); }
+    .threshold-item.t-yellow { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); }
+    .threshold-item.t-green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.15); }
+    .threshold-item .ti-icon { font-size: 18px; flex-shrink: 0; }
+    .threshold-item .ti-range { font-weight: 800; min-width: 80px; }
+    .threshold-item.t-red .ti-range { color: #f87171; }
+    .threshold-item.t-yellow .ti-range { color: #fbbf24; }
+    .threshold-item.t-green .ti-range { color: #4ade80; }
+    .threshold-item .ti-desc { color: var(--text-muted); }
+
+    /* 技术栈 */
+    .tech-row {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;
+    }
+    .tech-tag {
+      font-size: 12px; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+      background: rgba(99,179,237,0.1);
+      border: 1px solid rgba(99,179,237,0.2);
+      color: #63b3ed;
+    }
+
+    /* 代码块 */
+    .code-block {
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .code-block .c-green { color: #4ade80; }
+    .code-block .c-blue { color: #63b3ed; }
+    .code-block .c-yellow { color: #fbbf24; }
+    .code-block .c-gray { color: #6b7280; }
+    .code-block .c-white { color: #e5e7eb; }
+
+    .tomorrow-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(99,179,237,0.2);
+      color: var(--text);
+      border-radius: 16px; padding: 28px; margin: 32px 0;
+    }
+    .tomorrow-card .label {
+      font-size: 11px; font-weight: 700; color: #63b3ed;
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;
+    }
+    .tomorrow-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 16px; line-height: 1.4; }
+    .tomorrow-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px; color: var(--text-muted);
+    }
+    .tomorrow-item:last-child { border: none; }
+    .ti-icon { font-size: 18px; }
+
+    /* 收件箱模拟 */
+    .inbox-mock {
+      background: #1a1f2e;
+      border: 1px solid rgba(99,179,237,0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .inbox-topbar {
+      background: rgba(99,179,237,0.08);
+      border-bottom: 1px solid rgba(99,179,237,0.15);
+      padding: 10px 16px;
+      font-size: 12px; color: #63b3ed; font-weight: 700;
+    }
+    .inbox-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .inbox-item:last-child { border: none; }
+    .inbox-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .inbox-dot.red { background: #f87171; }
+    .inbox-dot.yellow { background: #fbbf24; }
+    .inbox-dot.green { background: #4ade80; }
+    .inbox-subject { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .inbox-preview { font-size: 12px; color: var(--text-muted); }
+
+    p { margin-bottom: 18px; font-size: 15px; line-height: 1.9; color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">澄</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个普通人的AI学习实录 · 每天更新 · 全程真实</p>
+      </div>
+      <div class="header-live">
+        <span class="live-dot"></span>
+        LIVE
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">首页</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-link">← 返回首页</a>
+
+    <div class="hero-banner">
+      <div class="episode">第5集 · 2026年6月14日</div>
+      <h1>AI开始帮我<br/>盯着<span>股票</span>了</h1>
+      <p class="subtitle">持仓铠侠(285A) 20股 + 英伟达 5股<br/>
+      两个Agent上线，一个发日报，一个实时监控急涨急跌<br/>
+      邮件直达Gmail，一眼看出今天要不要进去操作</p>
+    </div>
+
+    <div class="article-body">
+
+      <!-- Chapter 01 -->
+      <div class="chapter">
+        <span class="chapter-num">01</span>
+        <h2>问题：等我看到新闻已经晚了</h2>
+      </div>
+
+      <p>日本股市9点开盘，但真正影响开盘价的是前一天晚上美国的走势。等我早上起来打开手机，翻完新闻，最佳操作时机往往已经过了。</p>
+
+      <p>我持仓两只股票：铠侠控股（285A）20股、英伟达（NVDA）5股。半导体行业受美国政策影响极大——出口管制、关税、AI芯片需求，随便一条新闻都能让股价大幅波动。</p>
+
+      <div class="chat-scene">
+        <div class="scene-label">今天的对话起点</div>
+        <div class="bubble-row right">
+          <div class="av me">我</div>
+          <div class="bbl me">我需要你每天分析能影响半导体股票的重要新闻、美国股市变动。如果对日本半导体有重大影响，必须给我发邮件，要醒目，比如建议我今天卖掉还是加仓。</div>
+        </div>
+        <div class="bubble-row">
+          <div class="av ai">AI</div>
+          <div class="bbl ai">好，我来设计两个Agent：一个每天早上8点发日报，一个在交易时间内每5分钟实时监控铠侠股价，急变动立刻发邮件。</div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="num">2</div>
+          <div class="label">个Agent<br/>同时运行</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">5</div>
+          <div class="label">分钟<br/>监控间隔</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">8:00</div>
+          <div class="label">AM 每天<br/>日报发送</div>
+        </div>
+      </div>
+
+      <!-- Chapter 02 -->
+      <div class="chapter">
+        <span class="chapter-num">02</span>
+        <h2>两个Agent的分工</h2>
+      </div>
+
+      <div class="agent-grid">
+        <div class="agent-box daily">
+          <span class="agent-badge">DAILY · 每天</span>
+          <h4>半导体日报</h4>
+          <div class="agent-item"><span>🕗</span> 每天8:00 AM自动触发</div>
+          <div class="agent-item"><span>🔍</span> 搜索昨晚美股收盘数据</div>
+          <div class="agent-item"><span>📰</span> 抓取半导体相关重要新闻</div>
+          <div class="agent-item"><span>🤖</span> AI分析对铠侠和英伟达的影响</div>
+          <div class="agent-item"><span>📧</span> 发邮件到Gmail，含买卖建议</div>
+        </div>
+        <div class="agent-box realtime">
+          <span class="agent-badge">REALTIME · 实时</span>
+          <h4>铠侠盘中监控</h4>
+          <div class="agent-item"><span>⏱</span> 交易时间每5分钟检查一次</div>
+          <div class="agent-item"><span>📊</span> 实时获取285A当前价格</div>
+          <div class="agent-item"><span>📐</span> 计算相对开盘价的涨跌幅</div>
+          <div class="agent-item"><span>🚨</span> 超过阈值立刻发预警邮件</div>
+          <div class="agent-item"><span>🛡</span> 防重复：30分钟内不重复发</div>
+        </div>
+      </div>
+
+      <!-- Chapter 03 -->
+      <div class="chapter">
+        <span class="chapter-num">03</span>
+        <h2>关键设计：预警阈值怎么定？</h2>
+      </div>
+
+      <p>铠侠（285A）是2024年底刚上市的公司，业务100%依赖NAND闪存价格，AI需求拉动下波动极大。查了历史数据：</p>
+
+      <div class="think-box blue">
+        <div class="think-label">历史极值参考</div>
+        2026年2月12日财报发布：单日 <strong style="color:#63b3ed;">+12.36%</strong><br/>
+        2026年3月31日美国景气忧虑：单日 <strong style="color:#f87171;">-11.85%</strong><br/>
+        年初来股价区间：¥11,350 → ¥24,420（约115%振幅）<br/>
+        正常交易日波动估算：±2~3%
+      </div>
+
+      <p>基于此，设计了三级预警体系：</p>
+
+      <div class="threshold-row">
+        <div class="threshold-item t-red">
+          <span class="ti-icon">🔴</span>
+          <span class="ti-range">≥ ±7%</span>
+          <span class="ti-desc">紧急预警 — "立即查看！" 明显异常，可能有重大消息</span>
+        </div>
+        <div class="threshold-item t-yellow">
+          <span class="ti-icon">🟡</span>
+          <span class="ti-range">±4%~7%</span>
+          <span class="ti-desc">注意预警 — "建议关注" 高于正常波动1.5倍以上</span>
+        </div>
+        <div class="threshold-item t-green">
+          <span class="ti-icon">🟢</span>
+          <span class="ti-range">&lt; ±4%</span>
+          <span class="ti-desc">正常范围 — 不发邮件，静默继续监控</span>
+        </div>
+      </div>
+
+      <!-- Chapter 04 -->
+      <div class="chapter">
+        <span class="chapter-num">04</span>
+        <h2>预警邮件长什么样？</h2>
+      </div>
+
+      <p>邮件标题直接显示涨跌幅，不用点开就能判断要不要去操作：</p>
+
+      <div class="inbox-mock">
+        <div class="inbox-topbar">Gmail 收件箱 · 示例</div>
+        <div class="inbox-item">
+          <div class="inbox-dot red"></div>
+          <div>
+            <div class="inbox-subject">🔴 [铠侠(285A) -7.3%] 急跌预警！立即查看！ 10:42</div>
+            <div class="inbox-preview">当前价格: ¥75,260 / 今日开盘: ¥81,200 / 今日浮亏变动约: ¥87,680</div>
+          </div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-dot yellow"></div>
+          <div>
+            <div class="inbox-subject">🟡 [铠侠(285A) +4.8%] 急涨预警！建议关注 13:15</div>
+            <div class="inbox-preview">当前价格: ¥85,100 / 操作建议: 上涨注意 — 可考虑是否到了获利了结的时机</div>
+          </div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-dot green"></div>
+          <div>
+            <div class="inbox-subject">🟢 [半导体日报] 铠侠(285A)・英伟达 — 2026-06-16</div>
+            <div class="inbox-preview">今日操作建议：铠侠持有 / 英伟达持有 | NASDAQ -0.3% | SOXX半导体ETF -0.8%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter 05 -->
+      <div class="chapter">
+        <span class="chapter-num">05</span>
+        <h2>实操过程</h2>
+      </div>
+
+      <p>整个搭建过程大概花了30分钟，三个关键步骤：</p>
+
+      <p><strong style="color:var(--text);">第一步：Gmail App密码</strong> — 不能用普通密码，要在Google账号里生成专用的16位"应用密码"，只能发邮件，随时可撤销，安全。</p>
+
+      <p><strong style="color:var(--text);">第二步：测试Gmail SMTP连通</strong> — 用PowerShell发了一封测试邮件，秒到。</p>
+
+      <div class="code-block">
+        <span class="c-gray"># PowerShell 测试 Gmail SMTP</span><br/>
+        <span class="c-blue">$cred</span> <span class="c-white">= New-Object PSCredential(</span><span class="c-yellow">"gmail地址"</span><span class="c-white">, $securePass)</span><br/>
+        <span class="c-white">Send-MailMessage -SmtpServer </span><span class="c-yellow">smtp.gmail.com</span><span class="c-white"> -Port </span><span class="c-green">587</span><span class="c-white"> -UseSsl ✓</span>
+      </div>
+
+      <p><strong style="color:var(--text);">第三步：创建两个定时任务</strong> — 在Claude Code的"ルーチン"（定时任务）里，分别设置了每天8点和每5分钟的自动触发。</p>
+
+      <div class="tech-row">
+        <span class="tech-tag">Python smtplib</span>
+        <span class="tech-tag">Gmail SMTP</span>
+        <span class="tech-tag">Yahoo Finance API</span>
+        <span class="tech-tag">PowerShell</span>
+        <span class="tech-tag">Claude Scheduled Tasks</span>
+        <span class="tech-tag">WebSearch</span>
+        <span class="tech-tag">WebFetch</span>
+      </div>
+
+      <p>中途发现一个错误：把铠侠的股票代码写成了6600，实际应该是 <strong style="color:#63b3ed;">285A</strong>。好在AI帮我找到了所有需要改的地方，一起修正了。</p>
+
+      <div class="think-box orange">
+        <div class="think-label">今天最大的感悟</div>
+        以前我以为"自动化"就是定时执行脚本，写死逻辑。<br/>
+        今天做的是：AI自己判断新闻重不重要，自己决定邮件内容，自己选择要不要发。<br/><br/>
+        这才是Agent和普通脚本的区别——<strong style="color:rgba(255,195,155,1);">有判断力，不只是执行力。</strong>
+      </div>
+
+      <!-- Chapter 06 -->
+      <div class="chapter">
+        <span class="chapter-num">06</span>
+        <h2>今天的实验结果</h2>
+      </div>
+
+      <p>两个任务都创建并验证完毕。周一（6月16日）9点开盘后，铠侠监控Agent会自动启动。</p>
+
+      <p>而且查了一下金曜日（6月12日）的数据：铠侠当天涨了 <strong style="color:#63b3ed;">+7.64%</strong>，正好超过了我设定的7%紧急阈值。如果那天任务已经运行，我应该会收到一封🔴紧急预警邮件——20股的单日浮盈变动约 <strong style="color:#4ade80;">+¥115,200</strong>。</p>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="num">¥81,200</div>
+          <div class="label">铠侠(285A)<br/>6/12 收盘价</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">+7.64%</div>
+          <div class="label">金曜日<br/>单日涨幅</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">🔴</div>
+          <div class="label">触发紧急<br/>预警阈值</div>
+        </div>
+      </div>
+
+      <div class="tomorrow-card">
+        <div class="label">DAY 005 总结</div>
+        <h3>AI成了我的股票助理</h3>
+        <div class="tomorrow-item"><span class="ti-icon">✅</span> 每日8AM半导体日报已上线（含买卖建议）</div>
+        <div class="tomorrow-item"><span class="ti-icon">✅</span> 铠侠(285A)实时监控已上线（5分钟/次）</div>
+        <div class="tomorrow-item"><span class="ti-icon">✅</span> 三级预警体系（±4%注意 / ±7%紧急）</div>
+        <div class="tomorrow-item"><span class="ti-icon">✅</span> Gmail直接收邮件，标题就看出要不要行动</div>
+        <div class="tomorrow-item"><span class="ti-icon">⏳</span> 明天早上看看会不会真的收到邮件…</div>
+      </div>
+
+      <blockquote>
+        学AI第5天，给股票上了个自动保险。以后不用盯着手机了，AI会在该动的时候通知我。
+      </blockquote>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">真实记录，用AI摸出效率</p>
+  </footer>
+
+</body>
+</html>
