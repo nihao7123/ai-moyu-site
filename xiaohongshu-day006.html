@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>小红书 Day006 图片</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a2e; font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; padding: 40px; display: flex; flex-direction: column; gap: 60px; align-items: center; }
+
+    .card {
+      width: 1080px;
+      height: 1350px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* ===================== CARD 1 ===================== */
+    .card1 {
+      background: #020b18;
+    }
+    .card1 .bg-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .card1 .g1 { width: 700px; height: 700px; background: rgba(34,197,94,0.12); top: -200px; left: -200px; }
+    .card1 .g2 { width: 500px; height: 500px; background: rgba(99,179,237,0.10); bottom: -100px; right: -100px; }
+
+    .card1 .top-tag {
+      position: absolute; top: 60px; left: 60px;
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.4);
+      color: #4ade80;
+      font-size: 22px; font-weight: 700;
+      padding: 8px 20px; border-radius: 40px;
+      letter-spacing: 0.05em;
+    }
+    .card1 .day-num {
+      position: absolute; top: 60px; right: 60px;
+      font-size: 18px; font-weight: 800; color: rgba(255,255,255,0.2);
+      letter-spacing: 0.15em;
+    }
+
+    .card1 .center-block {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 900px;
+    }
+    .card1 .cloud-icon {
+      font-size: 100px;
+      margin-bottom: 36px;
+      display: block;
+    }
+    .card1 .main-title {
+      font-size: 72px; font-weight: 900; color: white;
+      line-height: 1.1; margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+    .card1 .main-title .green { color: #4ade80; }
+    .card1 .sub-line {
+      font-size: 30px; color: rgba(255,255,255,0.55);
+      line-height: 1.6; font-weight: 400;
+    }
+
+    .card1 .proof-row {
+      position: absolute;
+      bottom: 180px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 32px;
+    }
+    .card1 .proof-chip {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-size: 24px; color: rgba(255,255,255,0.7);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .card1 .proof-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; }
+
+    .card1 .bottom-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 60px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card1 .bottom-bar .account { font-size: 24px; font-weight: 700; color: rgba(255,255,255,0.4); }
+    .card1 .bottom-bar .tag { font-size: 22px; color: rgba(74,222,128,0.6); }
+
+    /* ===================== CARD 2 ===================== */
+    .card2 {
+      background: #020b18;
+    }
+    .card2 .bg-glow {
+      position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none;
+    }
+    .card2 .g1 { width: 600px; height: 600px; background: rgba(99,179,237,0.08); top: -150px; right: -150px; }
+    .card2 .g2 { width: 500px; height: 500px; background: rgba(34,197,94,0.08); bottom: -100px; left: -100px; }
+
+    .card2 .header {
+      position: absolute; top: 60px; left: 60px; right: 60px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card2 .header .label {
+      background: rgba(99,179,237,0.15); border: 1px solid rgba(99,179,237,0.35);
+      color: #63b3ed; font-size: 22px; font-weight: 700;
+      padding: 8px 20px; border-radius: 40px;
+    }
+    .card2 .header .day { font-size: 18px; font-weight: 800; color: rgba(255,255,255,0.2); letter-spacing: 0.12em; }
+
+    .card2 .title-block {
+      position: absolute; top: 150px; left: 60px; right: 60px;
+    }
+    .card2 .title-block h2 {
+      font-size: 52px; font-weight: 900; color: white; line-height: 1.2; margin-bottom: 16px;
+    }
+    .card2 .title-block h2 .blue { color: #63b3ed; }
+    .card2 .title-block .desc { font-size: 26px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+    .card2 .flow-block {
+      position: absolute; top: 380px; left: 60px; right: 60px;
+    }
+    .card2 .flow-label { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 24px; }
+
+    .card2 .old-new { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+    .card2 .col-head { font-size: 22px; font-weight: 800; margin-bottom: 16px; }
+    .card2 .col-head.red { color: #f87171; }
+    .card2 .col-head.green { color: #4ade80; }
+    .card2 .col-box {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 24px;
+    }
+    .card2 .col-box.green-box { background: rgba(34,197,94,0.05); border-color: rgba(34,197,94,0.2); }
+    .card2 .col-item { font-size: 22px; color: rgba(255,255,255,0.65); line-height: 1.9; display: flex; align-items: flex-start; gap: 10px; }
+    .card2 .col-item .ic { flex-shrink: 0; }
+
+    .card2 .steps-block { display: flex; flex-direction: column; gap: 16px; }
+    .card2 .step {
+      display: flex; align-items: center; gap: 20px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 18px 22px;
+    }
+    .card2 .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(74,222,128,0.15); border: 2px solid rgba(74,222,128,0.4);
+      color: #4ade80; font-size: 20px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .card2 .step-text { font-size: 24px; color: rgba(255,255,255,0.75); line-height: 1.4; }
+    .card2 .step-sub { font-size: 19px; color: rgba(255,255,255,0.35); margin-top: 3px; }
+
+    .card2 .bottom-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 28px 60px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card2 .bottom-bar .account { font-size: 22px; font-weight: 700; color: rgba(255,255,255,0.4); }
+    .card2 .bottom-bar .tag { font-size: 22px; color: rgba(74,222,128,0.6); }
+
+    /* ===================== CARD 3 ===================== */
+    .card3 {
+      background: #020b18;
+    }
+    .card3 .bg-glow {
+      position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none;
+    }
+    .card3 .g1 { width: 700px; height: 700px; background: rgba(34,197,94,0.10); bottom: -200px; right: -200px; }
+    .card3 .g2 { width: 400px; height: 400px; background: rgba(251,146,60,0.07); top: -100px; left: -100px; }
+
+    .card3 .header {
+      position: absolute; top: 60px; left: 60px; right: 60px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card3 .header .label {
+      background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35);
+      color: #4ade80; font-size: 22px; font-weight: 700;
+      padding: 8px 20px; border-radius: 40px;
+    }
+    .card3 .header .day { font-size: 18px; font-weight: 800; color: rgba(255,255,255,0.2); letter-spacing: 0.12em; }
+
+    .card3 .title-block {
+      position: absolute; top: 155px; left: 60px; right: 60px;
+    }
+    .card3 .title-block h2 {
+      font-size: 52px; font-weight: 900; color: white; line-height: 1.2; margin-bottom: 16px;
+    }
+    .card3 .title-block h2 .green { color: #4ade80; }
+    .card3 .title-block .desc { font-size: 26px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+    .card3 .wx-mock {
+      position: absolute; top: 370px; left: 60px; right: 60px;
+      background: rgba(0,0,0,0.5); border: 1px solid rgba(74,222,128,0.25);
+      border-radius: 20px; overflow: hidden;
+    }
+    .card3 .wx-top {
+      background: rgba(34,197,94,0.1); border-bottom: 1px solid rgba(74,222,128,0.15);
+      padding: 18px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .card3 .wx-dot { width: 10px; height: 10px; border-radius: 50%; background: #4ade80; }
+    .card3 .wx-top-text { font-size: 22px; font-weight: 700; color: rgba(74,222,128,0.85); }
+    .card3 .wx-badge {
+      margin-left: auto;
+      background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3);
+      color: #4ade80; font-size: 18px; font-weight: 700;
+      padding: 4px 14px; border-radius: 20px;
+    }
+    .card3 .wx-body { padding: 28px 30px; }
+    .card3 .wx-title { font-size: 26px; font-weight: 800; color: white; margin-bottom: 20px; line-height: 1.4; }
+    .card3 .wx-line { font-size: 22px; color: rgba(255,255,255,0.65); line-height: 2.0; }
+    .card3 .wx-line strong { color: rgba(255,255,255,0.9); }
+    .card3 .wx-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 16px 0; }
+    .card3 .wx-footer { font-size: 19px; color: rgba(255,255,255,0.3); margin-top: 12px; }
+
+    .card3 .insight-block {
+      position: absolute; bottom: 130px; left: 60px; right: 60px;
+      background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 16px; padding: 28px 32px;
+    }
+    .card3 .insight-label { font-size: 20px; font-weight: 700; color: #4ade80; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .card3 .insight-text { font-size: 24px; color: rgba(255,255,255,0.75); line-height: 1.7; }
+
+    .card3 .bottom-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 28px 60px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card3 .bottom-bar .account { font-size: 22px; font-weight: 700; color: rgba(255,255,255,0.4); }
+    .card3 .bottom-bar .tag { font-size: 22px; color: rgba(74,222,128,0.6); }
+  </style>
+</head>
+<body>
+
+  <!-- ===== CARD 1 封面 ===== -->
+  <div class="card card1">
+    <div class="bg-glow g1"></div>
+    <div class="bg-glow g2"></div>
+
+    <div class="top-tag">用AI摸鱼的人</div>
+    <div class="day-num">DAY 006</div>
+
+    <div class="center-block">
+      <span class="cloud-icon">☁️</span>
+      <div class="main-title">AI第一次<br/><span class="green">24小时不停</span><br/>工作了</div>
+      <div class="sub-line">
+        关电脑了，躺下了<br/>
+        微信——还是响了
+      </div>
+    </div>
+
+    <div class="proof-row">
+      <div class="proof-chip"><div class="dot"></div>电脑关机</div>
+      <div class="proof-chip"><div class="dot"></div>GitHub云端运行</div>
+      <div class="proof-chip"><div class="dot"></div>微信照常推送</div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="account">@用AI摸鱼的人</span>
+      <span class="tag">#GitHub Actions #AI自动化 #云端</span>
+    </div>
+  </div>
+
+  <!-- ===== CARD 2 过程 ===== -->
+  <div class="card card2">
+    <div class="bg-glow g1"></div>
+    <div class="bg-glow g2"></div>
+
+    <div class="header">
+      <span class="label">过程 · Day 006</span>
+      <span class="day">DAY 006 / 7</span>
+    </div>
+
+    <div class="title-block">
+      <h2>GitHub是一台<br/><span class="blue">免费云电脑</span></h2>
+      <div class="desc">不需要你的电脑开机，它帮你跑脚本</div>
+    </div>
+
+    <div class="flow-block">
+      <div class="flow-label">旧方案 VS 新方案</div>
+      <div class="old-new">
+        <div>
+          <div class="col-head red">❌ 旧方案（本地）</div>
+          <div class="col-box">
+            <div class="col-item"><span class="ic">💻</span>Claude Code 定时器</div>
+            <div class="col-item"><span class="ic">🐍</span>本地 Python 脚本</div>
+            <div class="col-item"><span class="ic">⚠️</span>电脑必须开机</div>
+            <div class="col-item"><span class="ic">😴</span>睡觉 = 停止监控</div>
+          </div>
+        </div>
+        <div>
+          <div class="col-head green">✅ 新方案（云端）</div>
+          <div class="col-box green-box">
+            <div class="col-item"><span class="ic">☁️</span>GitHub Actions</div>
+            <div class="col-item"><span class="ic">🐍</span>云端 Python 脚本</div>
+            <div class="col-item"><span class="ic">🆓</span>完全免费</div>
+            <div class="col-item"><span class="ic">😴</span>睡觉 = 继续监控</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-label">今天上线了两个任务</div>
+      <div class="steps-block">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">📊 半导体日报</div>
+            <div class="step-sub">每天 8:00 AM（日本时间）自动推送微信</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">🚨 铠侠盘中监控</div>
+            <div class="step-sub">每5分钟检测，急涨急跌 ±4% 立刻预警</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="account">@用AI摸鱼的人</span>
+      <span class="tag">#GitHub Actions #免费云端 #AI炒股</span>
+    </div>
+  </div>
+
+  <!-- ===== CARD 3 结果 ===== -->
+  <div class="card card3">
+    <div class="bg-glow g1"></div>
+    <div class="bg-glow g2"></div>
+
+    <div class="header">
+      <span class="label">结果 · Day 006</span>
+      <span class="day">DAY 006 / 7</span>
+    </div>
+
+    <div class="title-block">
+      <h2>验证成功<br/><span class="green">微信真的响了</span></h2>
+      <div class="desc">手动触发，GitHub服务器运行，我收到了</div>
+    </div>
+
+    <div class="wx-mock">
+      <div class="wx-top">
+        <div class="wx-dot"></div>
+        <div class="wx-top-text">微信 · 方糖服务号</div>
+        <div class="wx-badge">GitHub云端推送</div>
+      </div>
+      <div class="wx-body">
+        <div class="wx-title">🟢 [半导体日报] 铠侠·英伟达<br/>— 2026-06-16</div>
+        <div class="wx-line">📌 铠侠(285A)：<strong>持有</strong></div>
+        <div class="wx-line">📌 英伟达(NVDA)：<strong>持有</strong></div>
+        <hr class="wx-divider"/>
+        <div class="wx-line">SOXX ETF：+0.8%（$234.50）</div>
+        <div class="wx-line">英伟达(NVDA)：<strong>+1.4%</strong>（$139.20）</div>
+        <hr class="wx-divider"/>
+        <div class="wx-line">市场平稳，正常持有即可。</div>
+        <div class="wx-footer">GitHub Actions 云端自动运行 · 08:00 JST</div>
+      </div>
+    </div>
+
+    <div class="insight-block">
+      <div class="insight-label">📌 今天学到的</div>
+      <div class="insight-text">
+        AI帮你工作的终极状态：<br/>
+        <strong style="color:white;">不是「你让它做」，而是「它一直在做」</strong><br/>
+        你需要的时候，结果已经来了。
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="account">@用AI摸鱼的人</span>
+      <span class="tag">#AI自动化 #微信推送 #每天进步一点点</span>
+    </div>
+  </div>
+
+</body>
+</html>

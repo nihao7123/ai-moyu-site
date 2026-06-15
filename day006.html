@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 006 · AI第一次真正24小时不停工作</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner {
+      background: linear-gradient(135deg, #050d1a 0%, #0a1a2e 50%, #050d1a 100%);
+      border: 1px solid rgba(74,222,128,0.25);
+      border-radius: 16px;
+      padding: 44px 32px;
+      margin-bottom: 40px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '☁️';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.06;
+      right: -10px;
+      bottom: -20px;
+    }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.5; margin-bottom: 12px; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #4ade80; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.7; line-height: 1.7; }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #22c55e; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .chat-scene {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 24px; margin: 24px 0;
+    }
+    .chat-scene .scene-label {
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+    }
+    .bubble-row { display: flex; margin-bottom: 14px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .av.me { background: rgba(74,222,128,0.2); }
+    .av.ai { background: rgba(99,179,237,0.2); }
+    .bbl { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.6; }
+    .bbl.me { background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.25); color: var(--text); border-bottom-right-radius: 4px; }
+    .bbl.ai { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-bottom-left-radius: 4px; }
+
+    .bug-box {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 12px; padding: 16px; margin: 12px 0;
+    }
+    .bug-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .bug-title { font-size: 14px; font-weight: 700; color: #f87171; margin-bottom: 4px; }
+    .bug-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .bug-fix { font-size: 12px; color: #4ade80; margin-top: 6px; font-weight: 600; }
+
+    .flow-diagram {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 24px; margin: 24px 0;
+    }
+    .flow-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .flow-node {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .flow-node.green { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.25); }
+    .flow-node.blue { background: rgba(99,179,237,0.1); border-color: rgba(99,179,237,0.25); }
+    .flow-node.orange { background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.25); }
+    .flow-arrow { color: rgba(255,255,255,0.3); font-size: 18px; flex-shrink: 0; }
+    .flow-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; letter-spacing: 0.08em; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .stat-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-num { font-size: 28px; font-weight: 900; color: #4ade80; line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); }
+    .think-box.blue { background: rgba(99,179,237,0.06); border: 1px solid rgba(99,179,237,0.2); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .think-box.green .think-label { color: #4ade80; }
+    .think-box.blue .think-label { color: #63b3ed; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    .wx-card {
+      background: #07121e;
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 14px; overflow: hidden; margin: 20px 0;
+    }
+    .wx-top {
+      background: rgba(74,222,128,0.08);
+      padding: 10px 16px;
+      font-size: 11px; font-weight: 700; color: rgba(74,222,128,0.7);
+      border-bottom: 1px solid rgba(74,222,128,0.1);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .wx-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+    .wx-msg { padding: 16px; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.8; }
+    .wx-msg strong { color: white; }
+    .wx-badge { display: inline-block; background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.25); color: #4ade80; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+
+    .tomorrow-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 24px; margin-top: 40px;
+    }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #4ade80; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 006 · 2026-06-15</div>
+      <h1>AI第一次真正<span>24小时不停</span>工作了</h1>
+      <p class="subtitle">
+        关电脑了，躺下了，微信还是响了。<br/>
+        这一天我终于把AI从我的电脑上解放出来，搬到了云端。
+      </p>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>早上打开微信，什么都没有</h2>
+    </div>
+
+    <p>昨天 Day 005 设置好两个定时任务，一个每天早上8点发半导体日报，一个盘中每5分钟监控铠侠股价。满以为今天早上微信会有通知，结果什么都没有。</p>
+
+    <div class="chat-scene">
+      <div class="scene-label">今早的对话</div>
+      <div class="bubble-row right">
+        <div class="av me">我</div>
+        <div class="bbl me">你赶紧看看，昨天晚上我让你做股票预测，早上应该8点和9点以后给我发邮件，怎么一封邮件我都没有收到啊？</div>
+      </div>
+      <div class="bubble-row">
+        <div class="av ai">🤖</div>
+        <div class="bbl ai">先查一下定时任务的状态……找到两个问题：第一，Python命令写的是 python3，但你的 Windows 上只有 python；第二，Gmail 的 App Password 失效了，认证报535错误。</div>
+      </div>
+      <div class="bubble-row right">
+        <div class="av me">我</div>
+        <div class="bbl me">密码失效这个问题很大啊。为什么非要登录我自己的邮箱？能不能换一种方式？</div>
+      </div>
+      <div class="bubble-row">
+        <div class="av ai">🤖</div>
+        <div class="bbl ai">可以用 Server酱（方糖）发微信，不用登录你的邮箱，只需要一个 Token，永久有效，不受账号登录行为影响。</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>一次诊断，发现了两个 bug</h2>
+    </div>
+
+    <p>AI 查到了定时任务的状态，发现两个独立的问题同时存在——难怪一封邮件都没收到。</p>
+
+    <div class="bug-box">
+      <div class="bug-icon">🐛</div>
+      <div>
+        <div class="bug-title">Bug 1：python3 在 Windows 上不存在</div>
+        <div class="bug-desc">SKILL.md 里写的是 <code>python3</code>，但这台 Windows 电脑只有 <code>python</code>。任务每次触发就静默失败，根本没有执行到发邮件那一步。</div>
+        <div class="bug-fix">✅ 修复：把两个 SKILL.md 里的 python3 改成 python</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <div class="bug-icon">🔑</div>
+      <div>
+        <div class="bug-title">Bug 2：Gmail App Password 失效</div>
+        <div class="bug-desc">Gmail 的应用专用密码在你从其他设备登录、或 Google 安全检测触发时会自动撤销。这不是操作错误，是系统机制——你无法控制。</div>
+        <div class="bug-fix">✅ 修复：彻底抛弃 Gmail SMTP，换成微信推送</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>换掉邮件，改用微信推送</h2>
+    </div>
+
+    <p>Server酱（方糖）是一个专门做微信推送的服务。扫码登录，拿到一个 SendKey，以后发通知就一行代码搞定，Token 永久有效。</p>
+
+    <div class="flow-diagram">
+      <div class="flow-label">新的通知流程</div>
+      <div class="flow-row">
+        <div class="flow-node blue">📊 股价数据</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Python 脚本</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node orange">Server酱 API</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node green">📱 微信消息</div>
+      </div>
+    </div>
+
+    <div class="wx-card">
+      <div class="wx-top">
+        <div class="wx-dot"></div>
+        微信 · 方糖服务号 · 测试消息
+        <span class="wx-badge">已送达</span>
+      </div>
+      <div class="wx-msg">
+        <strong>🟢 [半导体日报] 铠侠·英伟达 — 2026-06-16</strong><br/><br/>
+        📌 铠侠(285A)：持有<br/>
+        📌 英伟达(NVDA)：持有<br/><br/>
+        <span style="color:rgba(255,255,255,0.45);">SOXX ETF：+0.8% · 英伟达：$139.20（+1.4%）<br/>市场平稳，正常持有即可。</span>
+      </div>
+    </div>
+
+    <div class="think-box green">
+      <div class="think-label">🔍 关键洞察</div>
+      <p>邮件要登录你的账号才能发出去，所以账号的任何变动都会影响它。而 API 通知（Server酱、Telegram、企业微信等）是第三方帮你传递消息，只需要一个独立 Token——跟你的个人账号完全解耦。以后做任何自动通知，首选 API，不要 SMTP。</p>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>但还有一个致命问题：关电脑就挂了</h2>
+    </div>
+
+    <p>微信通知解决了，但用户问了一个更根本的问题：</p>
+
+    <blockquote>「那今天是 Day006，就研究这个吧。以后主要是用 AI 做的工作，就是让它 24 小时不间断工作，电脑不开机也能工作才行。」</blockquote>
+
+    <p>这才是 AI Agent 的终极状态——不依赖任何人的电脑，在云端自己运转。</p>
+
+    <p>解决方案：<strong>GitHub Actions</strong>。GitHub 给每个仓库提供免费的云端服务器，可以按时间表自动执行脚本，每月 2000 分钟免费——对我们的用量来说完全够用，而且是真正的云端，关机没影响。</p>
+
+    <div class="flow-diagram">
+      <div class="flow-label" style="margin-bottom:16px;">旧方案 vs 新方案</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#f87171;margin-bottom:10px;">❌ 旧方案（本地）</div>
+          <div class="flow-node" style="margin-bottom:8px;font-size:12px;">Claude Code 定时器</div>
+          <div class="flow-node" style="margin-bottom:8px;font-size:12px;">↓ 触发 Python 脚本</div>
+          <div class="flow-node" style="margin-bottom:8px;font-size:12px;background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);">需要电脑开机 ⚠️</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#4ade80;margin-bottom:10px;">✅ 新方案（云端）</div>
+          <div class="flow-node green" style="margin-bottom:8px;font-size:12px;">GitHub Actions cron</div>
+          <div class="flow-node green" style="margin-bottom:8px;font-size:12px;">↓ 云端运行 Python</div>
+          <div class="flow-node green" style="margin-bottom:8px;font-size:12px;">24小时自动，无依赖 ✅</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>上云的过程：比想象中简单</h2>
+    </div>
+
+    <p>整个过程 AI 帮我完成的，我只做了两件事：提供 Server酱 的 SendKey，和在 GitHub 上确认权限。</p>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">2</div>
+        <div class="stat-label">个 Python 脚本<br/>（纯标准库，无需安装）</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">2</div>
+        <div class="stat-label">个 GitHub Actions<br/>工作流配置</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">¥0</div>
+        <div class="stat-label">每月费用<br/>（免费额度内）</div>
+      </div>
+    </div>
+
+    <p>关键设计：SendKey 存在 GitHub Secrets 里，代码里只写 <code>os.environ["FTQQ_SENDKEY"]</code>——即使仓库是公开的，密钥也不会泄露。</p>
+
+    <p>两个任务的运行时间表：</p>
+
+    <div class="flow-diagram">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="flow-node blue" style="justify-content:space-between;">
+          <span>📊 半导体日报</span>
+          <span style="font-size:12px;opacity:0.7;">每天 8:00 AM JST（周一到周五）</span>
+        </div>
+        <div class="flow-node green" style="justify-content:space-between;">
+          <span>🚨 铠侠盘中监控</span>
+          <span style="font-size:12px;opacity:0.7;">每5分钟，9:00–15:30 JST（交易时段）</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 6 -->
+    <div class="chapter">
+      <span class="chapter-num">第六章</span>
+      <h2>验证：关电脑，还是响了</h2>
+    </div>
+
+    <p>手动触发了两个任务，两个都成功。GitHub 的日志显示：</p>
+
+    <div class="chat-scene">
+      <div class="scene-label">GitHub Actions 运行日志</div>
+      <div style="font-family:monospace;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.9;">
+        <div><span style="color:#4ade80;">✓</span> run daily report</div>
+        <div style="padding-left:16px;color:rgba(255,255,255,0.45);">微信已发送: {'code': 0, 'error': 'SUCCESS'}</div>
+        <div style="margin-top:8px;"><span style="color:#4ade80;">✓</span> run intraday monitor</div>
+        <div style="padding-left:16px;color:rgba(255,255,255,0.45);">JST: 2026-06-15 21:47 → 非交易时间，退出。</div>
+      </div>
+    </div>
+
+    <p>日报发出来了，微信收到了。盘中监控正确判断出 21:47 不是交易时间，静默退出——这才是对的行为。</p>
+
+    <div class="think-box green">
+      <div class="think-label">📌 今天最重要的事</div>
+      <p>AI Agent 真正有用的状态，不是"你让它做，它做"，而是"它在后台一直做，你需要的时候结果已经来了"。今天这两个脚本，不需要我的电脑，不需要我在线，GitHub 的服务器会自动跑，微信会自动收——这才叫 AI 在帮你工作。</p>
+    </div>
+
+    <blockquote>今天之前，AI 是我的工具。今天之后，AI 是我的员工。区别是：员工不需要你盯着。</blockquote>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>明天 8:00 AM JST 验证日报是否准时送达（云端定时，不依赖电脑）</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>如果铠侠波动超过 ±4%，微信会自动收到预警（不需要主动看行情）</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>下一步探索：GitHub Actions 还能帮我自动做什么？（周报？待办清单？）</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">你有没有什么重复性的工作，希望 AI 帮你自动跑起来？留下来，我可以研究一下。</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
