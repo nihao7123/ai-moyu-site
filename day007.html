@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 007 · 今天我没造东西，我想清楚了往哪走</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner {
+      background: linear-gradient(135deg, #1a1400 0%, #2a1e00 50%, #0d0b14 100%);
+      border: 1px solid rgba(251,191,36,0.3);
+      border-radius: 16px;
+      padding: 44px 32px;
+      margin-bottom: 40px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '🧭';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.07;
+      right: -10px;
+      bottom: -20px;
+    }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.55; margin-bottom: 12px; color: #fbbf24; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #fbbf24; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.72; line-height: 1.7; }
+    .hero-banner .milestone-tag {
+      display: inline-block; margin-top: 16px;
+      background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3);
+      color: #fbbf24; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      padding: 5px 12px; border-radius: 20px;
+    }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #d97706; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .chat-scene {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 24px; margin: 24px 0;
+    }
+    .chat-scene .scene-label {
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+    }
+    .bubble-row { display: flex; margin-bottom: 14px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .av.me { background: rgba(251,191,36,0.2); }
+    .av.ai { background: rgba(99,179,237,0.2); }
+    .bbl { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.6; }
+    .bbl.me { background: rgba(251,191,36,0.13); border: 1px solid rgba(251,191,36,0.25); color: var(--text); border-bottom-right-radius: 4px; }
+    .bbl.ai { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-bottom-left-radius: 4px; }
+
+    .data-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .data-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; text-align: center; }
+    .data-num { font-size: 24px; font-weight: 900; color: #fbbf24; line-height: 1.1; margin-bottom: 6px; }
+    .data-label { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    /* 旧 vs 新 对比 */
+    .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    .vs-card { border-radius: 14px; padding: 20px; }
+    .vs-card.old { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.22); }
+    .vs-card.new { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.25); }
+    .vs-head { font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+    .vs-card.old .vs-head { color: #f87171; }
+    .vs-card.new .vs-head { color: #4ade80; }
+    .vs-body { font-size: 13px; color: var(--text); line-height: 1.65; }
+    .vs-body .small { color: var(--text-muted); font-size: 12px; display: block; margin-top: 8px; }
+
+    /* 三类资产 */
+    .asset { display: flex; gap: 14px; align-items: flex-start; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+    .asset-ico { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .asset-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .asset-title span { color: #fbbf24; }
+    .asset-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* SAP→AI 映射表 */
+    .map-table { border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; margin: 24px 0; }
+    .map-head, .map-row { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; gap: 10px; padding: 14px 18px; }
+    .map-head { background: rgba(251,191,36,0.08); font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: #fbbf24; }
+    .map-row { border-top: 1px solid rgba(255,255,255,0.06); font-size: 13px; line-height: 1.55; }
+    .map-row .left { color: var(--text); font-weight: 600; }
+    .map-row .arrow { color: rgba(251,191,36,0.6); text-align: center; font-size: 15px; }
+    .map-row .right { color: var(--text-muted); }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.gold { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.25); }
+    .think-box.green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .think-box.gold .think-label { color: #fbbf24; }
+    .think-box.green .think-label { color: #4ade80; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    /* 重磅金句 */
+    .punch {
+      background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(217,119,6,0.06));
+      border: 1px solid rgba(251,191,36,0.35);
+      border-radius: 16px; padding: 28px 26px; margin: 32px 0; text-align: center;
+    }
+    .punch .punch-text { font-size: 19px; font-weight: 900; color: #fde047; line-height: 1.5; }
+    .punch .punch-sub { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+
+    .tomorrow-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 24px; margin-top: 40px;
+    }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #fbbf24; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    blockquote {
+      background: rgba(251,191,36,0.08);
+      border-left: 4px solid #fbbf24;
+      padding: 16px 20px; border-radius: 0 8px 8px 0;
+      margin: 24px 0; font-style: italic; color: rgba(253,224,71,0.92);
+      line-height: 1.75;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 007 · 2026-06-16</div>
+      <h1>今天我没造东西 —<br/><span>我想清楚了往哪走</span></h1>
+      <p class="subtitle">
+        前六天，我每天做一个工具。今天我停下来，问了自己一个一直不敢问的问题：<br/>
+        大家都会用AI了，我还有什么护城河？
+      </p>
+      <span class="milestone-tag">🧭 里程碑 · 方向定位篇</span>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>我的焦虑：会用AI，好像谁都会</h2>
+    </div>
+
+    <p>今天没动手做东西。我跟AI聊了很久，起点是一个让我有点慌的念头。</p>
+
+    <div class="chat-scene">
+      <div class="scene-label">今天的对话</div>
+      <div class="bubble-row right">
+        <div class="av me">我</div>
+        <div class="bbl me">现在大家都在用AI，公司甚至强迫我们用，而且没什么壁垒，会说话就行。不像当年我学SAP，有很大的护城河，学会了很值钱。现在AI出来了，我还有什么护城河啊？</div>
+      </div>
+      <div class="bubble-row">
+        <div class="av ai">🤖</div>
+        <div class="bbl ai">你这个判断有一半是对的——"会用AI"本身确实不是护城河。但你忽略了一件事：真正值钱的东西，从来不在工具本身，而在工具接上去的地方。</div>
+      </div>
+    </div>
+
+    <p>我甚至有点对SAP失去信心了，觉得快失业了。但接下来这场聊天，把我的想法整个翻过来了。</p>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>第一个转念：SAP没死，反而在涨</h2>
+    </div>
+
+    <p>我让AI别讲大道理，去查真实数据。结果出乎我意料——我的近期恐惧，数据说是错的。</p>
+
+    <div class="data-row">
+      <div class="data-box">
+        <div class="data-num">3×</div>
+        <div class="data-label">S/4HANA 人才<br/>需求是供给的3倍</div>
+      </div>
+      <div class="data-box">
+        <div class="data-num">+30~50%</div>
+        <div class="data-label">SAP咨询费用<br/>2026–27年上涨</div>
+      </div>
+      <div class="data-box">
+        <div class="data-num">2027</div>
+        <div class="data-label">迁移大限驱动<br/>需求正旺</div>
+      </div>
+    </div>
+
+    <p>我做的 FI/MM/SD，正好是最抢手的模块。未来1–3年不会失业，市场缺人缺到抢。但有一句话我必须正视：</p>
+
+    <blockquote>"纯实现类的工作——经典开发、测试、配置——正承受更大压力，这类任务会变得更容易被替代。"</blockquote>
+
+    <div class="think-box gold">
+      <div class="think-label">🔍 翻译成人话</div>
+      <p>写ABAP、跑测试、做配置——这些"执行层"的活，AI正在吃掉。被淘汰的不是SAP从业者，是"只会执行、不会用AI放大自己"的人。需求没少，但只会执行的人会被挤出去。</p>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>真正的护城河：从"学不会"变成"追不上"</h2>
+    </div>
+
+    <p>那护城河到底是什么？AI给我讲了一个我没想过的角度：旧护城河和新护城河，逻辑完全变了。</p>
+
+    <div class="versus">
+      <div class="vs-card old">
+        <div class="vs-head">❌ 旧护城河（SAP那种）</div>
+        <div class="vs-body">
+          靠"别人学不会"——东西难、资料少、学的人少，所以稀缺。
+          <span class="small">问题：静态的，会被填平。AI时代信息壁垒没了。</span>
+        </div>
+      </div>
+      <div class="vs-card new">
+        <div class="vs-head">✅ 新护城河（AI时代）</div>
+        <div class="vs-body">
+          靠"别人追不上"——我一直在做你没在做的事。
+          <span class="small">优势：动态的，越早开始持续做，越拉越大。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="think-box gold">
+      <div class="think-label">💡 关键洞察</div>
+      <p>我的护城河不是"会用AI"（人人会），是 <strong>领域 know-how × AI × 渠道</strong>。我有12年SAP经验、中日双语、在日本——让一个新人用AI写SAP的FD，他连业务术语都不懂，问不出对的问题，也判断不出AI给的对不对。我能。这个判断力是我12年攒的，AI只能放大它，给不了别人。</p>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>不押注，攒资产</h2>
+    </div>
+
+    <p>我问AI该押哪个方向赌AI Agent这波。它说了一句让我安心的话：现在迷茫是对的——没人知道三年后什么样，所以正确的姿势不是"押对浪"，而是<strong>"不管浪往哪打，我都有东西"</strong>。</p>
+
+    <p>具体就是每个月给自己多攒一点、不管未来怎样都值钱的东西：</p>
+
+    <div class="asset">
+      <div class="asset-ico">📣</div>
+      <div>
+        <div class="asset-title">资产一：<span>渠道</span></div>
+        <div class="asset-desc">这个小红书账号、这个网站。公开造东西，把影响力一点点攒起来。没渠道的人，做出再好的东西也卖不掉。</div>
+      </div>
+    </div>
+    <div class="asset">
+      <div class="asset-ico">🛠️</div>
+      <div>
+        <div class="asset-title">资产二：<span>作品集</span></div>
+        <div class="asset-desc">用AI造出来的真实工具。第一个就是SAP代码review助手。会用工具不是护城河，用工具持续造出来的东西才是。</div>
+      </div>
+    </div>
+    <div class="asset">
+      <div class="asset-ico">🧠</div>
+      <div>
+        <div class="asset-title">资产三：<span>认知</span></div>
+        <div class="asset-desc">企业到底怎么落地AI，尤其中日之间的巨大落地差距。我在日本、懂技术、双语——这个认知别人攒不来。</div>
+      </div>
+    </div>
+
+    <div class="think-box green">
+      <div class="think-label">🧯 防焦虑三规矩</div>
+      <p>① 只考核"我有没有做"，不考核"火没火"。② 允许断更——漏一天不是失败。③ 每月底回头看攒了什么，而不是每天盯涨没涨粉。复利是回头看才看得见的。</p>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>核心：会用工程纪律，管住AI</h2>
+    </div>
+
+    <p>聊到最后，我自己冒出一个想法——这可能是今天最重要的收获。</p>
+
+    <p>很多人都知道用AI写代码很容易，于是开发小工具上线。结果各种报错、需求一变就崩，因为代码完全任由AI随便写：没有设计书、没有系统测试、全是硬代码，根本改不动。</p>
+
+    <div class="think-box gold">
+      <div class="think-label">⚙️ 我悟到的本质</div>
+      <p>AI改变的是"谁写代码"，<strong>不是"还要不要工程纪律"</strong>。写代码从来不是软件工程最难的部分——最难的是想清楚要做什么（设计）、怎么证明它对（测试）、需求变了怎么不崩（变更管理）。AI把"写"压成了5分钟，但这三件事它一件都没替你做。</p>
+    </div>
+
+    <p>"任由AI随便写"的人，等于跳过了工程里最值钱的2/3，只做了最不值钱的1/3。所以结论反过来了：<strong>AI时代，工程纪律不是没用了，是更值钱了。</strong></p>
+
+    <p>而我干了这么多年SAP的那套流程，拆开看，正好是一套现成的方法论——直接能套到AI开发上：</p>
+
+    <div class="map-table">
+      <div class="map-head">
+        <div>我的SAP流程</div>
+        <div></div>
+        <div>套到AI开发上</div>
+      </div>
+      <div class="map-row">
+        <div class="left">设计书 FD/FS</div>
+        <div class="arrow">→</div>
+        <div class="right">先把要做什么讲清楚，再让AI写</div>
+      </div>
+      <div class="map-row">
+        <div class="left">单体 / 结合测试</div>
+        <div class="arrow">→</div>
+        <div class="right">定义清楚怎么验证它是对的</div>
+      </div>
+      <div class="map-row">
+        <div class="left">指摘 / Review</div>
+        <div class="arrow">→</div>
+        <div class="right">读懂并审查AI写的每一段</div>
+      </div>
+      <div class="map-row">
+        <div class="left">式样变更管理</div>
+        <div class="arrow">→</div>
+        <div class="right">需求变了，有序地改而不是推倒重写</div>
+      </div>
+    </div>
+
+    <p>后来AI告诉我，这个方向业界正在收敛，有个名字叫 <strong>spec-driven development（规格驱动开发）</strong>——核心就是：先有清晰的规格和验证标准，再让AI去实现。我是从SAP实践里自己悟出来的，居然和最前沿的方向撞上了。</p>
+
+    <!-- 收尾金句 -->
+    <div class="punch">
+      <div class="punch-text">我不是又一个学AI的人。<br/>我是带着12年工程纪律，<br/>来管住AI的人。</div>
+      <div class="punch-sub">— 这句话，是今天我给自己的定位</div>
+    </div>
+
+    <blockquote>会用AI不是护城河，会用工程纪律管住AI，才是。</blockquote>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>进了新项目，就用那 9672 条指摘数据，做一个 SAP 代码 review 助手——按我们项目的真实质量标准挑毛病</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>按"每周只造一个东西"的节奏走，造的过程本身就是内容</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>开一个新系列：《AI写的代码，为什么三个月后就改不动了》</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">你也在担心被AI替代吗？还是已经想清楚自己的护城河了？聊聊，我想听听。</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="specific"
+        data-term="day007"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
