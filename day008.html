@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 008 · 我想给AI装插件，结果被公司拦了</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner {
+      background: linear-gradient(135deg, #03101f 0%, #06243a 50%, #0a0d18 100%);
+      border: 1px solid rgba(56,189,248,0.3);
+      border-radius: 16px;
+      padding: 44px 32px;
+      margin-bottom: 40px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '🔌';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.07;
+      right: -10px;
+      bottom: -20px;
+    }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.55; margin-bottom: 12px; color: #38bdf8; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #38bdf8; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.72; line-height: 1.7; }
+    .hero-banner .milestone-tag {
+      display: inline-block; margin-top: 16px;
+      background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3);
+      color: #38bdf8; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      padding: 5px 12px; border-radius: 20px;
+    }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #0ea5e9; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .chat-scene {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 24px; margin: 24px 0;
+    }
+    .chat-scene .scene-label {
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+    }
+    .bubble-row { display: flex; margin-bottom: 14px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .av.me { background: rgba(56,189,248,0.2); }
+    .av.ai { background: rgba(74,222,128,0.2); }
+    .bbl { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.6; }
+    .bbl.me { background: rgba(56,189,248,0.13); border: 1px solid rgba(56,189,248,0.25); color: var(--text); border-bottom-right-radius: 4px; }
+    .bbl.ai { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-bottom-left-radius: 4px; }
+
+    .terminal {
+      background: #05080f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; overflow: hidden; margin: 20px 0;
+      font-family: 'Cascadia Code','Consolas',monospace;
+    }
+    .terminal-top { background: rgba(255,255,255,0.04); padding: 8px 14px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 6px; }
+    .terminal-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .td-r { background: #ff5f56; } .td-y { background: #ffbd2e; } .td-g { background: #27c93f; }
+    .terminal-body { padding: 16px 18px; font-size: 13px; line-height: 1.8; }
+    .terminal-body .cmd { color: #9fd0ff; word-break: break-all; }
+    .terminal-body .prompt { color: #4ade80; }
+    .terminal-body .err { color: #f87171; font-weight: 700; margin-top: 8px; }
+
+    .bug-box {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 12px; padding: 16px; margin: 12px 0;
+    }
+    .bug-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .bug-title { font-size: 14px; font-weight: 700; color: #f87171; margin-bottom: 4px; }
+    .bug-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* 够得着 vs 够不着 */
+    .reach-table { border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; margin: 24px 0; }
+    .reach-head, .reach-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; align-items: center; gap: 10px; padding: 14px 18px; font-size: 13px; }
+    .reach-head { background: rgba(56,189,248,0.08); font-weight: 800; color: #38bdf8; letter-spacing: 0.04em; }
+    .reach-row { border-top: 1px solid rgba(255,255,255,0.06); }
+    .reach-row .svc { color: var(--text); font-weight: 600; }
+    .reach-row .yes { color: #4ade80; font-weight: 700; }
+    .reach-row .no { color: #f87171; font-weight: 700; }
+    .reach-row .need-no { color: var(--text-muted); }
+    .reach-row .need-yes { color: #38bdf8; font-weight: 600; }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.cyan { background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.25); }
+    .think-box.green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .think-box.cyan .think-label { color: #38bdf8; }
+    .think-box.green .think-label { color: #4ade80; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    .punch {
+      background: linear-gradient(135deg, rgba(56,189,248,0.12), rgba(14,165,233,0.05));
+      border: 1px solid rgba(56,189,248,0.35);
+      border-radius: 16px; padding: 28px 26px; margin: 32px 0; text-align: center;
+    }
+    .punch .punch-text { font-size: 19px; font-weight: 900; color: #7dd3fc; line-height: 1.5; }
+    .punch .punch-sub { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+
+    .tomorrow-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 24px; margin-top: 40px;
+    }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #38bdf8; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    blockquote {
+      background: rgba(56,189,248,0.08);
+      border-left: 4px solid #38bdf8;
+      padding: 16px 20px; border-radius: 0 8px 8px 0;
+      margin: 24px 0; font-style: italic; color: rgba(125,211,252,0.92);
+      line-height: 1.75;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 008 · 2026-06-17</div>
+      <h1>我想给AI装个"插件"，<br><span>结果被公司电脑拦了</span></h1>
+      <p class="subtitle">
+        本来想"晋级"一下，给AI接上更大的能力。<br/>
+        撞了一次墙，反而想明白一件事：我根本不需要它。
+      </p>
+      <span class="milestone-tag">🔌 踩坑 + 反转</span>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>我听说AI能装"插件"，挺兴奋</h2>
+    </div>
+
+    <p>前七天，我都是跟AI聊天、让它帮我写东西、做小工具。今天想学个"高级"点的——给AI装<strong>插件（正式名字叫 MCP 连接器）</strong>。</p>
+
+    <p>简单说，插件能让AI从"只会说"变成"能动手操作真实的工具"。我想先装一个 <strong>GitHub 插件</strong>，让AI以后能直接管我的网站仓库，不用我每次手动操作。</p>
+
+    <div class="think-box cyan">
+      <div class="think-label">📖 名词解释</div>
+      <p>插件 / MCP 连接器：相当于给AI接上一只"手"，让它能伸进某个外部工具里去操作——比如你的 GitHub、Gmail、笔记软件。装上插件，AI就不只是"建议你怎么做"，而是"直接帮你做"。</p>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>一行命令，当场撞墙</h2>
+    </div>
+
+    <p>AI给了我一行命令，我满怀期待地敲下回车——结果红字报错：</p>
+
+    <div class="terminal">
+      <div class="terminal-top">
+        <span class="terminal-dot td-r"></span><span class="terminal-dot td-y"></span><span class="terminal-dot td-g"></span>
+        Windows PowerShell
+      </div>
+      <div class="terminal-body">
+        <div><span class="prompt">PS&gt;</span> <span class="cmd">claude mcp add --transport http github "https://api.githubcopilot.com/mcp/" ...</span></div>
+        <div class="err">✗ Cannot add MCP server "github": not allowed by enterprise policy</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <div class="bug-icon">🚧</div>
+      <div>
+        <div class="bug-title">翻译成人话：公司不让装</div>
+        <div class="bug-desc">我这台是公司发的电脑，公司IT用"企业策略"禁止了员工自己装插件。这是公司的安全规定，我改不了，<strong>也不该去绕过它</strong>。所以——在工作电脑上，装插件这条路是堵死的。</div>
+      </div>
+    </div>
+
+    <p>说实话，第一反应有点泄气：搞了半天，白学了？</p>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>等一下……我好像根本不需要它</h2>
+    </div>
+
+    <p>冷静下来我想：我装这个 GitHub 插件，是为了让AI能管我的仓库。可是——</p>
+
+    <blockquote>昨天 Day007 那篇，不就是AI直接帮我推上线的吗？全程一个插件都没用啊。</blockquote>
+
+    <p>对啊。AI早就能管我的 GitHub 了。因为 GitHub 自己提供了一个"遥控器"——一个叫 <code>gh</code> 的命令行工具，它已经装在我电脑上、也登录好了。AI直接拿这个遥控器用就行，<strong>压根不需要额外的插件</strong>。</p>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>这下我才真懂了：插件到底是干嘛的</h2>
+    </div>
+
+    <p>插件不是"越多越高级"。它有一个非常具体的用途：</p>
+
+    <div class="punch">
+      <div class="punch-text">插件，是用来连<br>"AI够不着的东西"的。</div>
+      <div class="punch-sub">够得着的，根本不用插件</div>
+    </div>
+
+    <p>把AI想象成一个很能干的助理：他只能用<strong>手边够得着</strong>的工具。GitHub 这个工具正好在他手边（gh命令），拿起来就用；而 Gmail、笔记软件那些锁在"别的房间"里的工具，才需要插件这把钥匙去开门。</p>
+
+    <div class="reach-table">
+      <div class="reach-head">
+        <div>想让AI操作</div>
+        <div>够得着吗</div>
+        <div>要插件吗</div>
+      </div>
+      <div class="reach-row">
+        <div class="svc">GitHub</div>
+        <div class="yes">✅ 有gh命令</div>
+        <div class="need-no">不用</div>
+      </div>
+      <div class="reach-row">
+        <div class="svc">本地文件</div>
+        <div class="yes">✅ AI自带</div>
+        <div class="need-no">不用</div>
+      </div>
+      <div class="reach-row">
+        <div class="svc">Gmail 收发邮件</div>
+        <div class="no">✘ 够不着</div>
+        <div class="need-yes">要插件</div>
+      </div>
+      <div class="reach-row">
+        <div class="svc">Notion / 飞书</div>
+        <div class="no">✘ 够不着</div>
+        <div class="need-yes">要插件</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>这篇文章，就是证据</h2>
+    </div>
+
+    <p>说一千道一万，不如直接证明给你看。</p>
+
+    <p>你现在正在读的这篇 Day008，<strong>从写出来到发布上线，全程是AI用 <code>gh</code> 命令帮我搞定的，没有用任何插件。</strong>我只说了一句"把今天的经历做成Day008，发出去"。</p>
+
+    <div class="think-box green">
+      <div class="think-label">✅ 你能看到这页 = 证明成立</div>
+      <p>这页能出现在你面前，就说明：AI不需要装插件，也能直接管我的 GitHub 仓库、把网站更新上线。我想要的那个"能力"，其实昨天就已经在手里了。</p>
+    </div>
+
+    <div class="think-box cyan">
+      <div class="think-label">🧠 今天最大的收获</div>
+      <p>新手老有一个错觉：以为要装个"高级功能"才算厉害。但很多时候，你手里的基础工具已经够强了，只是你没意识到。够得着的东西，别绕远路去装钥匙。</p>
+    </div>
+
+    <blockquote>我以为我缺一个插件。其实我缺的，是看清自己手里已经有什么。</blockquote>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>插件这东西很有意思，等哪天用<strong>自己的私人电脑</strong>，再装个玩玩（比如连Gmail、连笔记）</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>继续推进那个真正想做的东西：让AI帮我审查代码的小工具</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>记住今天这个教训：先看清手里有什么，再决定要不要去找新工具</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">你也在用公司电脑学AI吗？有没有遇到过"想用某个功能结果被拦"的情况？聊聊。</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="specific"
+        data-term="day008"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
