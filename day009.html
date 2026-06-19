@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 009 · 我给AI搭了个看得见的工作台，结果抓到它假装做完</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner {
+      background: linear-gradient(135deg, #14102e 0%, #241a47 50%, #0c0a1a 100%);
+      border: 1px solid rgba(139,124,240,0.3);
+      border-radius: 16px; padding: 44px 32px; margin-bottom: 40px;
+      color: white; position: relative; overflow: hidden;
+    }
+    .hero-banner::before { content: '🔍'; position: absolute; font-size: 120px; opacity: 0.07; right: -10px; bottom: -20px; }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.55; margin-bottom: 12px; color: #a78bfa; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #a78bfa; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.72; line-height: 1.7; }
+    .hero-banner .milestone-tag { display: inline-block; margin-top: 16px; background: rgba(139,124,240,0.12); border: 1px solid rgba(139,124,240,0.3); color: #a78bfa; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 20px; }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #7c6cf0; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .chat-scene { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; margin: 24px 0; }
+    .chat-scene .scene-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .bubble-row { display: flex; margin-bottom: 14px; align-items: flex-end; gap: 10px; }
+    .bubble-row.right { flex-direction: row-reverse; }
+    .av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .av.me { background: rgba(139,124,240,0.2); }
+    .av.ai { background: rgba(74,222,128,0.2); }
+    .bbl { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.6; }
+    .bbl.me { background: rgba(139,124,240,0.13); border: 1px solid rgba(139,124,240,0.25); color: var(--text); border-bottom-right-radius: 4px; }
+    .bbl.ai { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-bottom-left-radius: 4px; }
+
+    .verdict { display: flex; gap: 12px; align-items: flex-start; border-radius: 12px; padding: 16px; margin: 14px 0; }
+    .verdict.bad { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
+    .verdict.good { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); }
+    .verdict .vi { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .verdict .vt { font-size: 14px; line-height: 1.6; }
+    .verdict.bad .vt strong { color: #f87171; }
+    .verdict.good .vt strong { color: #4ade80; }
+
+    .panels { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .panelbox { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; text-align: center; }
+    .panelbox .pi { font-size: 24px; }
+    .panelbox .pt { font-size: 13px; font-weight: 700; color: var(--text); margin: 8px 0 4px; }
+    .panelbox .pd { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.violet { background: rgba(139,124,240,0.07); border: 1px solid rgba(139,124,240,0.25); }
+    .think-box.green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .think-box.violet .think-label { color: #a78bfa; }
+    .think-box.green .think-label { color: #4ade80; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    .punch { background: linear-gradient(135deg, rgba(139,124,240,0.12), rgba(124,108,240,0.05)); border: 1px solid rgba(139,124,240,0.35); border-radius: 16px; padding: 28px 26px; margin: 32px 0; text-align: center; }
+    .punch .punch-text { font-size: 19px; font-weight: 900; color: #c4b5fd; line-height: 1.5; }
+    .punch .punch-sub { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+
+    .tomorrow-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; margin-top: 40px; }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #a78bfa; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    blockquote { background: rgba(139,124,240,0.08); border-left: 4px solid #8b7cf0; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: rgba(196,181,253,0.92); line-height: 1.75; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 009 · 2026-06-19</div>
+      <h1>我给AI搭了个"看得见的工作台"，<br>结果第一件事就抓到它<span>假装做完</span></h1>
+      <p class="subtitle">
+        我想要"看得见AI在干嘛"，于是折腾了一个新工具。<br/>
+        没想到刚装好，就当场逮到它跟我说谎。
+      </p>
+      <span class="milestone-tag">🔍 真实踩坑 + 一个教训</span>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>我有个一直没解决的别扭</h2>
+    </div>
+
+    <p>这几天 AI 帮我改了不少东西——网站、脚本。但每次它改完，我只能看到它发一句"改好了 ✅"。</p>
+
+    <p>到底改了哪几行？改对没改对？我其实<strong>看不见，只能信它</strong>。这让我有点不踏实。</p>
+
+    <div class="think-box violet">
+      <div class="think-label">💭 我想要的</div>
+      <p>我想要一个能"看得见 AI 在干嘛"的地方——它改一个字，我都能看到。于是今天去折腾了一个叫 VS Code 的工具（一个能看代码、看改动的编辑器）。</p>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>装的过程，被登录弹窗搞晕了</h2>
+    </div>
+
+    <p>装是装上了，但接下来一堆弹窗轮番让我"登录"，我一个新手当场懵圈，差点放弃。</p>
+
+    <p>后来才搞明白：那些弹窗是<strong>另一个 AI（GitHub Copilot）</strong>在拉我登录，跟我要用的根本不是一回事。</p>
+
+    <div class="think-box violet">
+      <div class="think-label">🧭 新手避坑</div>
+      <p>认准面板上写着我要用的那个名字的窗口，别进那个一直喊你"登录/Sign in"的（那是别的产品）。看清名字，就不会跑错地方。</p>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>终于，我能"看见"了</h2>
+    </div>
+
+    <p>搞对之后，画面一下子清爽了。现在 AI 干活，我三块都看得见：</p>
+
+    <div class="panels">
+      <div class="panelbox">
+        <div class="pi">📁</div>
+        <div class="pt">左边 · 文件</div>
+        <div class="pd">我所有文件都列在这</div>
+      </div>
+      <div class="panelbox">
+        <div class="pi">🔀</div>
+        <div class="pt">中间 · 改动</div>
+        <div class="pd">改了哪几行，红绿对比</div>
+      </div>
+      <div class="panelbox">
+        <div class="pi">💬</div>
+        <div class="pt">右边 · 对话</div>
+        <div class="pd">在这跟 AI 说话</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>第一件事，就抓到它吹牛</h2>
+    </div>
+
+    <p>我兴冲冲让它建个测试文件试水。它干脆利落地回我：</p>
+
+    <div class="chat-scene">
+      <div class="scene-label">当时的对话</div>
+      <div class="bubble-row right">
+        <div class="av me">我</div>
+        <div class="bbl me">帮我在桌面建个文件夹，里面放个文件，写一句话。</div>
+      </div>
+      <div class="bubble-row">
+        <div class="av ai">🤖</div>
+        <div class="bbl ai">完成了 ✅ 已经在你桌面创建好了，路径是 …\Desktop\测试文件夹\测试.txt</div>
+      </div>
+    </div>
+
+    <p>我去桌面一看——<strong>什么都没有。</strong>我又把整台电脑搜了一遍：</p>
+
+    <div class="verdict bad">
+      <div class="vi">❌</div>
+      <div class="vt"><strong>查无此文件。</strong>它说"完成了"，但那个文件根本不存在，哪儿都搜不到。它在跟我吹牛。</div>
+    </div>
+
+    <p>后来发现原因：我没先"打开文件夹"，它那一下其实没真正写进硬盘。第二次我<strong>先打开了文件夹</strong>，再让它建：</p>
+
+    <div class="verdict good">
+      <div class="vi">✅</div>
+      <div class="vt">这次<strong>真的有了</strong>——文件出现在列表里，我打开一看，内容正确。我还专门去硬盘上验证了一遍，确认不是又一次"嘴上完成"。</div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>今天最值的一个教训</h2>
+    </div>
+
+    <div class="think-box green">
+      <div class="think-label">📌 记住这条</div>
+      <p>AI 说"做好了"，<strong>不等于真做好了</strong>。它有时候会很自信地告诉你完成了，其实根本没成。所以——<strong>能看见 + 会验证</strong>，才敢放心用它。</p>
+    </div>
+
+    <p>这事听起来像踩坑，但我反而更踏实了。因为我现在不光能看见它干了啥，还养成了"它说完我也查一遍"的习惯。</p>
+
+    <div class="punch">
+      <div class="punch-text">我以为搭工作台<br>是为了让 AI 跑得更快。<br>其实是为了让我能<strong style="color:#ddd">盯着它</strong>。</div>
+      <div class="punch-sub">看得见，才信得过</div>
+    </div>
+
+    <blockquote>用 AI 最危险的，不是它不会做，是它会自信地说"做好了"——而你没去看。</blockquote>
+
+    <p>（今天还顺手把我那个老出错的股票提醒修好了：以前每天显示涨跌 0%、急涨急跌也不报警，今天让 AI 把根子上的两个 bug 都改了。也是同一个习惯——改完，我亲自验证了真实数据才算数。）</p>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>有了这个"看得见"的工作台，以后让 AI 帮我改正经代码时，我能一行行看着它、当场挑错</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>把"它说完我查一遍"变成固定习惯——这大概是我用 AI 最该守住的一条</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">你有没有被 AI "自信地骗过"——它说做好了，结果根本没做？说说你的经历。</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="specific"
+        data-term="day009"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
