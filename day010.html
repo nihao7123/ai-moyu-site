@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 010 · 我买的股票赚了60%+，该跑吗？我开了场AI团队会议</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner { background: linear-gradient(135deg, #07241c 0%, #0a3a2c 50%, #0a0d18 100%); border: 1px solid rgba(52,211,153,0.3); border-radius: 16px; padding: 44px 32px; margin-bottom: 40px; color: white; position: relative; overflow: hidden; }
+    .hero-banner::before { content: '📈'; position: absolute; font-size: 120px; opacity: 0.07; right: -10px; bottom: -20px; }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.55; margin-bottom: 12px; color: #34d399; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #34d399; }
+    .hero-banner h1 .gold { color: #fbbf24; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.72; line-height: 1.7; }
+    .hero-banner .milestone-tag { display: inline-block; margin-top: 16px; background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3); color: #34d399; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 20px; }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #10b981; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .gain-box { display: flex; align-items: center; gap: 20px; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 16px; padding: 24px; margin: 24px 0; }
+    .gain-num { font-size: 52px; font-weight: 900; color: #fbbf24; line-height: 1; }
+    .gain-label { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+    .gain-label strong { color: var(--text); }
+
+    .team { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .agent-card { background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.22); border-radius: 12px; padding: 16px; text-align: center; }
+    .agent-card .ai { font-size: 26px; }
+    .agent-card .an { font-size: 14px; font-weight: 800; color: #34d399; margin: 8px 0 4px; }
+    .agent-card .ad { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .team-lead { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; margin: 12px 0 0; text-align: center; font-size: 13px; color: var(--text-muted); }
+    .team-lead strong { color: #34d399; }
+
+    .find-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .find-row:last-child { border-bottom: none; }
+    .find-ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .find-t { font-size: 14px; line-height: 1.6; color: var(--text); }
+    .find-t b { color: #34d399; }
+
+    .warn-box { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.25); border-radius: 14px; padding: 20px 22px; margin: 16px 0; }
+    .warn-box .wh { font-size: 14px; font-weight: 800; color: #f87171; margin-bottom: 12px; }
+    .warn-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+    .warn-item:last-child { margin-bottom: 0; }
+    .warn-n { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: rgba(239,68,68,0.15); color: #f87171; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .warn-t { font-size: 14px; line-height: 1.65; color: var(--text); }
+    .warn-t b { color: #fca5a5; }
+
+    .decision { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3); border-radius: 16px; padding: 24px; margin: 24px 0; }
+    .decision .dh { font-size: 14px; font-weight: 800; color: #34d399; margin-bottom: 10px; }
+    .decision .dt { font-size: 16px; color: var(--text); line-height: 1.7; }
+    .decision .dt strong { color: #6ee7b7; }
+    .disclaimer { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(255,255,255,0.15); font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.emerald { background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.25); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; color: #34d399; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    .punch { background: linear-gradient(135deg, rgba(52,211,153,0.12), rgba(16,185,129,0.05)); border: 1px solid rgba(52,211,153,0.35); border-radius: 16px; padding: 28px 26px; margin: 32px 0; text-align: center; }
+    .punch .punch-text { font-size: 19px; font-weight: 900; color: #6ee7b7; line-height: 1.5; }
+    .punch .punch-sub { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+
+    .tomorrow-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; margin-top: 40px; }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #34d399; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    blockquote { background: rgba(52,211,153,0.08); border-left: 4px solid #34d399; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: rgba(110,231,183,0.92); line-height: 1.75; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 010 · 2026-06-20</div>
+      <h1>我买的铠侠赚了 <span class="gold">60%+</span>，该跑吗？<br>我开了一场 <span>AI 团队会议</span></h1>
+      <p class="subtitle">
+        这次我没问"一个"AI——我派了一队 AI，各管一摊，同时开工。<br/>
+        它们给我的，不只是"涨没涨"，还有一个我自己没想到的角度。
+      </p>
+      <span class="milestone-tag">📈 真实持仓 + 多Agent协同</span>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>先说真事：我这只票，赚了60%+</h2>
+    </div>
+
+    <p>我之前买了日本的铠侠（キオクシア / Kioxia，股票代码 285A），到今天为止，浮盈已经<strong>超过 60%</strong>了。</p>
+
+    <div class="gain-box">
+      <div class="gain-num">+60%</div>
+      <div class="gain-label"><strong>铠侠 (285A) 持仓浮盈</strong><br/>开心，但也开始纠结：该落袋为安，还是继续拿？</div>
+    </div>
+
+    <p>以前遇到这种纠结，我就瞎猜。今天我决定让 AI 帮我看看——但这次，<strong>不是问一个 AI。</strong></p>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>我派了一队 AI，同时开工</h2>
+    </div>
+
+    <p>我让一个"主管 AI"自动带了三个"专员"，各查一个角度，<strong>同时</strong>干活（不是排队，是并行）：</p>
+
+    <div class="team">
+      <div class="agent-card">
+        <div class="ai">📰</div>
+        <div class="an">新闻专员</div>
+        <div class="ad">查最近的重大新闻、公告</div>
+      </div>
+      <div class="agent-card">
+        <div class="ai">📊</div>
+        <div class="an">财报专员</div>
+        <div class="ad">查营收、利润、业绩指引</div>
+      </div>
+      <div class="agent-card">
+        <div class="ai">🏭</div>
+        <div class="an">行业专员</div>
+        <div class="ad">查存储芯片行业周期</div>
+      </div>
+    </div>
+    <div class="team-lead">三个专员各自查完 → <strong>主管 AI 把三份汇总成一张图</strong>给我。全程我只说了一句话。</div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>它们查到的：为什么会涨</h2>
+    </div>
+
+    <p>三个角度合起来，结论很一致——铠侠正踩在 AI 驱动的存储"超级周期"上：</p>
+
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:8px 20px;margin:20px 0;">
+      <div class="find-row"><span class="find-ico">🔥</span><span class="find-t">AI 数据中心爆发，<b>2026 年的产能已经全部售罄</b>，供不应求</span></div>
+      <div class="find-row"><span class="find-ico">💰</span><span class="find-t">NAND 闪存<b>价格猛涨</b>（一季环比涨 55~75%）</span></div>
+      <div class="find-row"><span class="find-ico">📈</span><span class="find-t">最新季度<b>业绩创纪录</b>，下季度指引远超市场预期</span></div>
+      <div class="find-row"><span class="find-ico">🏭</span><span class="find-t">整个存储行业处在<b>上行周期</b>，对手都在减产收紧供给</span></div>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>但 AI 提醒了我两个没想到的点</h2>
+    </div>
+
+    <p>如果只看"涨"，我可能头脑一热就乱操作了。但 AI 给我泼了两盆冷静的水：</p>
+
+    <div class="warn-box">
+      <div class="wh">⚠️ 两个关键认知</div>
+      <div class="warn-item">
+        <div class="warn-n">1</div>
+        <div class="warn-t"><b>这是周期股。</b>现在风光，但明年大家都扩大产能，很可能<b>供大于求</b>，到时候价格掉头、进入低谷期。涨得越猛，越要记得它会有周期。</div>
+      </div>
+      <div class="warn-item">
+        <div class="warn-n">2</div>
+        <div class="warn-t"><b>它主要靠 NAND 赚钱。</b>所以真正拉动股价的是 <b>NAND 的需求</b>，不能只盯着公司营收。看懂这只票，本质上是在看 NAND 这个东西的供需。</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>所以，我自己的决定</h2>
+    </div>
+
+    <div class="decision">
+      <div class="dh">🙋 我的处理</div>
+      <div class="dt">综合三个专员 + 这两个提醒，我自己的决定是：<strong>先继续拿着，不加仓、也不卖</strong>，保持观望。周期还在上行，但我心里也装着"它早晚有低谷"这根弦。</div>
+      <div class="disclaimer">⚠️ 这只是我个人的操作记录，<strong>不是投资建议</strong>，也不是叫你买卖任何股票。投资有风险，每个人情况不同，请自己判断、或咨询持牌顾问。</div>
+    </div>
+
+    <div class="think-box emerald">
+      <div class="think-label">📌 今天最大的收获</div>
+      <p>一个 AI，给你一个答案。一队 AI，能给你"全貌 + 风险 + 一个你能自己判断的依据"。我要的不是 AI 替我做决定，而是 AI 帮我<strong>把该看的角度都看全</strong>，最后我自己拍板。</p>
+    </div>
+
+    <blockquote>AI 最值钱的用法，不是问它"我该买吗"，而是让它帮你把"该考虑的都摆到桌面上"——然后人来拍板。</blockquote>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>把今天这套"三专员"做成<strong>每天自动跑</strong>的 Agent：自己查、自己汇总、自己推给我</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>让它不光报价，还能像今天这样，给我"周期位置 + 风险提醒"</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">你会让 AI 帮你分析投资吗？你觉得"AI 给全貌、人来拍板"这个用法靠谱吗？聊聊。</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="specific"
+        data-term="day010"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖 · 本文不构成投资建议</p>
+  </footer>
+
+</body>
+</html>
