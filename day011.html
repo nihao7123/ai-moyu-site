@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 011 · 我开始造"第二个我"了——把42小时的课喂给AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner { background: linear-gradient(135deg, #2a0d18 0%, #3d1226 50%, #0c0a16 100%); border: 1px solid rgba(251,113,133,0.3); border-radius: 16px; padding: 44px 32px; margin-bottom: 40px; color: white; position: relative; overflow: hidden; }
+    .hero-banner::before { content: '🧠'; position: absolute; font-size: 120px; opacity: 0.08; right: -10px; bottom: -20px; }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.55; margin-bottom: 12px; color: #fb7185; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #fb7185; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.72; line-height: 1.7; }
+    .hero-banner .milestone-tag { display: inline-block; margin-top: 16px; background: rgba(251,113,133,0.12); border: 1px solid rgba(251,113,133,0.3); color: #fb7185; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 20px; }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #e11d48; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .stat-box { background: rgba(251,113,133,0.06); border: 1px solid rgba(251,113,133,0.22); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-num { font-size: 30px; font-weight: 900; color: #fb7185; line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    .pipe { display: flex; flex-direction: column; gap: 0; margin: 24px 0; }
+    .pipe-step { display: flex; gap: 16px; align-items: flex-start; }
+    .pipe-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(251,113,133,0.12); border: 1px solid rgba(251,113,133,0.3); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .pipe-body { padding-bottom: 22px; }
+    .pipe-t { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .pipe-d { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .pipe-line { width: 2px; height: 22px; background: rgba(251,113,133,0.25); margin-left: 21px; }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.rose { background: rgba(251,113,133,0.07); border: 1px solid rgba(251,113,133,0.25); }
+    .think-box.amber { background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.22); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .think-box.rose .think-label { color: #fb7185; }
+    .think-box.amber .think-label { color: #fbbf24; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    .punch { background: linear-gradient(135deg, rgba(251,113,133,0.13), rgba(225,29,72,0.05)); border: 1px solid rgba(251,113,133,0.35); border-radius: 16px; padding: 28px 26px; margin: 32px 0; text-align: center; }
+    .punch .punch-text { font-size: 19px; font-weight: 900; color: #fda4af; line-height: 1.5; }
+    .punch .punch-sub { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+
+    .tomorrow-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; margin-top: 40px; }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #fb7185; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    blockquote { background: rgba(251,113,133,0.08); border-left: 4px solid #fb7185; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: rgba(253,164,175,0.92); line-height: 1.75; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 011 · 2026-06-21</div>
+      <h1>我开始造一个 <span>"第二个我"</span> 了</h1>
+      <p class="subtitle">
+        我有42小时的专业课程要学。与其学完就忘，<br/>
+        不如让 AI 把它们全"吃"进去——变成一个我随时能问的"大脑"。
+      </p>
+      <span class="milestone-tag">🧠 大工程 · 今天开工</span>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>起因：42小时的课，看完也会忘</h2>
+    </div>
+
+    <p>我手上有一套很重要的专业课程，要全部学透得花很久——而且就算学完，过段时间也会忘一大半。</p>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">14</div>
+        <div class="stat-label">节课</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">~42</div>
+        <div class="stat-label">小时视频</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">+PPT</div>
+        <div class="stat-label">一堆配套资料</div>
+      </div>
+    </div>
+
+    <p>我突然冒出一个念头：<strong>能不能让 AI 把这些全部学一遍，变成一个我随时能问的知识库？</strong></p>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>我的计划：把课程"喂"进AI</h2>
+    </div>
+
+    <p>整个流程其实是一条流水线：</p>
+
+    <div class="pipe">
+      <div class="pipe-step">
+        <div class="pipe-icon">🎬</div>
+        <div class="pipe-body">
+          <div class="pipe-t">① 把视频里讲的内容，转成文字</div>
+          <div class="pipe-d">42小时的讲解，自动转写成可搜索的文字稿</div>
+        </div>
+      </div>
+      <div class="pipe-line"></div>
+      <div class="pipe-step">
+        <div class="pipe-icon">🧩</div>
+        <div class="pipe-body">
+          <div class="pipe-t">② AI 整理 + 加上它的理解</div>
+          <div class="pipe-d">不是堆原文，而是归纳重点、补充解释，变成"消化过"的知识</div>
+        </div>
+      </div>
+      <div class="pipe-line"></div>
+      <div class="pipe-step">
+        <div class="pipe-icon">🗄️</div>
+        <div class="pipe-body">
+          <div class="pipe-t">③ 存成一个知识库</div>
+          <div class="pipe-d">连同 PPT 资料一起，建成一个能被精准检索的库</div>
+        </div>
+      </div>
+      <div class="pipe-line"></div>
+      <div class="pipe-step">
+        <div class="pipe-icon">💬</div>
+        <div class="pipe-body">
+          <div class="pipe-t">④ 以后我问，它从库里秒答</div>
+          <div class="pipe-d">答案不是网上随便搜的，是"我这套课程、我这个领域"的知识</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>为什么叫"第二个我"</h2>
+    </div>
+
+    <p>关键在第④步——它答的不是泛泛的网络知识，而是<strong>我这套特定课程、特定领域的知识</strong>。</p>
+
+    <div class="think-box rose">
+      <div class="think-label">🧠 这才是重点</div>
+      <p>等于我把脑子里（将要）装的东西，先一份份装进了 AI。<strong>我会的，它都会；而且它不会忘、不会累、随问随答。</strong>这不是一个"通用 AI 助手"，而是一个装着"我的知识"的副本——一个第二个我。</p>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>这套玩法，其实有个名字</h2>
+    </div>
+
+    <p>"喂自己的资料给 AI，让它只基于你的资料来回答"——这个做法在业界有个正式名字，叫 <strong>RAG（知识库检索增强）</strong>。</p>
+
+    <p>它现在是企业落地 AI 最实在的方式之一：把公司内部文档、手册、规范喂给 AI，员工一问就能拿到准确答案。我只是把同一套逻辑，先用在自己的学习上。</p>
+
+    <div class="think-box amber">
+      <div class="think-label">💡 顺带说</div>
+      <p>很多人以为"用 AI 学习"就是去问 ChatGPT。但真正强的，是让 AI 学你的资料、答你的问题。从"问通用 AI"升级到"问一个懂你的 AI"——这中间差了一整套工程。</p>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>诚实进度：今天刚开工</h2>
+    </div>
+
+    <p>这是个大工程，42小时的素材不可能一下子处理完。所以我给自己定的节奏是：<strong>先把"1 节课"从头到尾跑通</strong>——视频转文字、AI 整理、能被问答——验证这条路真能走，再批量上其余 13 节。</p>
+
+    <p>今天先把"第二个我"这个目标立在这里。后面每往前一步，我都会如实记录（包括哪里卡住、哪里翻车）。</p>
+
+    <div class="punch">
+      <div class="punch-text">别人学完就忘，<br>我学完，还能留一个<br>"永远记得"的副本。</div>
+      <div class="punch-sub">把知识，变成可以随时调用的资产</div>
+    </div>
+
+    <blockquote>真正的"用 AI 学习"，不是问它，是教会它——让它装下你学的东西，成为另一个你。</blockquote>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>先跑通 <strong>1 节课</strong>的完整流程：视频 → 文字 → AI 整理 → 能问答</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>验证可行后，再批量处理剩下的 13 节 + PPT</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>目标：建成一个"懂我所学"的知识库，问它=问一个第二个我</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">如果能造一个"装着你全部知识、永不遗忘"的 AI 副本，你最想先喂给它什么？</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="specific"
+        data-term="day011"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
