@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAY 012 · 我让一个AI当经理，带着一队AI替我打工，永不停工</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero-banner { background: linear-gradient(135deg, #0e0d2a 0%, #1a1745 50%, #0a0a18 100%); border: 1px solid rgba(129,140,248,0.32); border-radius: 16px; padding: 44px 32px; margin-bottom: 40px; color: white; position: relative; overflow: hidden; }
+    .hero-banner::before { content: '🤖'; position: absolute; font-size: 120px; opacity: 0.08; right: -10px; bottom: -20px; }
+    .hero-banner .episode { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; opacity: 0.55; margin-bottom: 12px; color: #818cf8; }
+    .hero-banner h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+    .hero-banner h1 span { color: #818cf8; }
+    .hero-banner .subtitle { font-size: 14px; opacity: 0.72; line-height: 1.7; }
+    .hero-banner .milestone-tag { display: inline-block; margin-top: 16px; background: rgba(129,140,248,0.12); border: 1px solid rgba(129,140,248,0.3); color: #a5b4fc; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 5px 12px; border-radius: 20px; }
+
+    .chapter { display: flex; align-items: center; gap: 12px; margin: 40px 0 16px; }
+    .chapter-num { background: #6366f1; color: white; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .chapter h2 { font-size: 19px; font-weight: 800; color: var(--text); margin: 0; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .stat-box { background: rgba(129,140,248,0.07); border: 1px solid rgba(129,140,248,0.22); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-num { font-size: 30px; font-weight: 900; color: #a5b4fc; line-height: 1.05; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    /* 团队结构 */
+    .org { background: rgba(0,0,0,0.25); border: 1px solid rgba(129,140,248,0.18); border-radius: 16px; padding: 26px 20px; margin: 24px 0; }
+    .boss { background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.4); border-radius: 12px; padding: 14px 18px; text-align: center; max-width: 280px; margin: 0 auto 6px; }
+    .boss .r { font-size: 15px; font-weight: 800; color: #a5b4fc; }
+    .boss .d { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .org-line { width: 2px; height: 18px; background: rgba(129,140,248,0.3); margin: 0 auto; }
+    .workers { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 6px; }
+    .worker { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 8px; text-align: center; }
+    .worker .wi { font-size: 20px; }
+    .worker .wn { font-size: 12px; color: var(--text); margin-top: 4px; font-weight: 600; }
+    .worker .ws { font-size: 10px; color: #4ade80; margin-top: 3px; }
+    .monitor { margin-top: 14px; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); border-radius: 10px; padding: 10px 14px; text-align: center; font-size: 12px; color: #fbbf24; font-weight: 600; }
+
+    .cap-list { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 8px 20px; margin: 20px 0; }
+    .cap-row { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .cap-row:last-child { border-bottom: none; }
+    .cap-ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .cap-t { font-size: 14px; line-height: 1.6; color: var(--text); }
+    .cap-t b { color: #a5b4fc; }
+
+    .big-num-box { display: flex; align-items: center; gap: 22px; background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.28); border-radius: 16px; padding: 24px; margin: 24px 0; }
+    .big-num { font-size: 56px; font-weight: 900; color: #4ade80; line-height: 1; flex-shrink: 0; }
+    .big-num-label { font-size: 14px; color: var(--text); line-height: 1.6; }
+    .big-num-label strong { color: #86efac; }
+
+    .think-box { border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+    .think-box.indigo { background: rgba(129,140,248,0.07); border: 1px solid rgba(129,140,248,0.25); }
+    .think-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; color: #a5b4fc; }
+    .think-box p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0; }
+
+    .punch { background: linear-gradient(135deg, rgba(129,140,248,0.13), rgba(99,102,241,0.05)); border: 1px solid rgba(129,140,248,0.35); border-radius: 16px; padding: 28px 26px; margin: 32px 0; text-align: center; }
+    .punch .punch-text { font-size: 19px; font-weight: 900; color: #a5b4fc; line-height: 1.5; }
+    .punch .punch-sub { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+
+    .tomorrow-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; margin-top: 40px; }
+    .tomorrow-card h3 { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; letter-spacing: 0.08em; }
+    .tomorrow-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .tomorrow-item .dot { color: #818cf8; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    blockquote { background: rgba(129,140,248,0.08); border-left: 4px solid #818cf8; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: rgba(165,180,252,0.92); line-height: 1.75; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">🐟</div>
+      <div class="header-text">
+        <h1>用AI摸鱼的人</h1>
+        <p class="tagline">一个小白的AI学习实录 · 每天一更 · 全程真实</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">日志</a>
+      <a href="about.html">关于我</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <div class="hero-banner">
+      <div class="episode">DAY 012 · 2026-06-22</div>
+      <h1>我让一个AI当"经理"，<br>带着一队AI替我打工——<span>我不关电脑，它就不停</span></h1>
+      <p class="subtitle">
+        这一天我发现：我已经不是在"用 AI"，<br/>
+        我是在<strong>管理一支会自己干活、自己纠错的 AI 团队</strong>。
+      </p>
+      <span class="milestone-tag">🤖 自主多Agent系统 · 今天最硬核</span>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <span class="chapter-num">第一章</span>
+      <h2>我想干一件大事，但人根本盯不过来</h2>
+    </div>
+
+    <p>我想把自己<strong>近10年攒下的专家级视频资料</strong>，全部喂给 AI，让它读完、记成文字、还加上理解和注释——建成一个"第二个大脑"。</p>
+
+    <p>这个大脑不是去网上搜杂乱信息回答我，而是<strong>深度理解我脑子里这套东西</strong>，再帮我做事。但素材太多，靠我一个人一段段盯着处理，根本盯不过来。</p>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <span class="chapter-num">第二章</span>
+      <h2>所以我让一个AI当"经理"</h2>
+    </div>
+
+    <p>我没有自己一个个去指挥，而是设了一个<strong>"经理 AI"</strong>，让它自己管这支队伍：</p>
+
+    <div class="cap-list">
+      <div class="cap-row"><span class="cap-ico">🧩</span><span class="cap-t"><b>自己分配任务</b>：把大活拆开，派给手下的 AI 去干</span></div>
+      <div class="cap-row"><span class="cap-ico">🙋</span><span class="cap-t"><b>自己判断要不要问我</b>：能定的自己定，拿不准的才来找我</span></div>
+      <div class="cap-row"><span class="cap-ico">🔧</span><span class="cap-t"><b>出错了自己修</b>：发现哪步错了，自己想办法修复，然后继续</span></div>
+      <div class="cap-row"><span class="cap-ico">♾️</span><span class="cap-t"><b>只要我不关电脑，它就不停工</b>：一直在后台干</span></div>
+    </div>
+
+    <div class="org">
+      <div class="boss">
+        <div class="r">🧠 经理 AI</div>
+        <div class="d">拆任务 · 做决策 · 自愈</div>
+      </div>
+      <div class="org-line"></div>
+      <div class="workers">
+        <div class="worker"><div class="wi">🎬</div><div class="wn">读视频</div><div class="ws">● 运行中</div></div>
+        <div class="worker"><div class="wi">✍️</div><div class="wn">转文字+注释</div><div class="ws">● 运行中</div></div>
+        <div class="worker"><div class="wi">🗄️</div><div class="wn">存进知识库</div><div class="ws">● 运行中</div></div>
+      </div>
+      <div class="monitor">🕒 监工 AI：每隔 15 分钟，自动检查其他 AI 干得怎么样</div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <span class="chapter-num">第三章</span>
+      <h2>它还给自己派了个"监工"</h2>
+    </div>
+
+    <p>最让我意外的是——它自己搞了一套<strong>监察机制</strong>：每隔 15 分钟，自动去查一遍其他 AI 的工作进度和状态，谁卡住了、谁出错了，及时处理。</p>
+
+    <div class="think-box indigo">
+      <div class="think-label">🤯 这就有点"团队"的意思了</div>
+      <p>经理派活、员工干活、监工巡检、出错自愈——这已经不是一个聊天机器人，而是一个<strong>能自己运转的小团队</strong>。我要做的，只是给它定目标。</p>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <span class="chapter-num">第四章</span>
+      <h2>它自己发现了瓶颈，还给我出主意</h2>
+    </div>
+
+    <p>跑着跑着，它发现处理视频很慢——因为用的是我电脑的 CPU。然后它<strong>主动给我提了个建议</strong>：改用云端处理，虽然要花点钱，但速度能大幅提升。</p>
+
+    <div class="big-num-box">
+      <div class="big-num">×60</div>
+      <div class="big-num-label">改用云端处理后，速度<strong>快了大约 60 倍</strong><br/>花一点点钱，省下的是几十倍的时间</div>
+    </div>
+
+    <p>它不只是埋头干活，还会<strong>抬头看路</strong>——发现瓶颈、提出更优的方案。这一点，挺出乎我意料的。</p>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <span class="chapter-num">第五章</span>
+      <h2>这意味着什么</h2>
+    </div>
+
+    <p>把这一切连起来看：经理 + 员工 + 监工 + 自愈 + 云端提速——这是一个<strong>能自己跑起来的系统</strong>。它在后台，正把我 10 年的经验，一点点变成一个永不遗忘的"第二个我"。</p>
+
+    <div class="think-box indigo">
+      <div class="think-label">📌 今天最大的转变</div>
+      <p>我的角色变了。我不再是那个一行行干活的人，我成了那个<strong>给一支 AI 团队定目标、然后让它自己跑</strong>的人。这大概就是大家说的"AI Agent"真正的样子——不是更聪明的聊天，是会自己干完一件事的系统。</p>
+    </div>
+
+    <blockquote>以前我以为用AI是"我问、它答"。今天我发现，真正的用法是：我定目标，一支AI团队自己把事干完。</blockquote>
+
+    <p style="font-size:13px;color:var(--text-muted);">（说明：喂进去的是我自己积累的学习资料，仅供我个人构建知识库使用；这篇只记录我搭这套系统的过程和方法，不涉及任何课程原文内容。）</p>
+
+    <div class="tomorrow-card">
+      <h3>📅 接下来</h3>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>让这支 AI 团队把 10 年的视频全部消化完，建成完整的"第二个大脑"</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>验证它的回答质量：问它专业问题，看是不是真的"懂我那套知识"</span>
+      </div>
+      <div class="tomorrow-item">
+        <span class="dot">→</span>
+        <span>把这套"经理+监工+自愈"的模式，用到我别的事情上</span>
+      </div>
+    </div>
+
+    <section class="guestbook">
+      <h2 class="guestbook-title">留言板</h2>
+      <p class="guestbook-desc">如果你能指挥一支"自己干活、自己纠错、永不停工"的 AI 团队，你会让它先帮你做什么？</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="nihao7123/ai-moyu-site"
+        data-repo-id="R_kgDOS14L6A"
+        data-category="General"
+        data-category-id="DIC_kwDOS14L6M4C-2f7"
+        data-mapping="specific"
+        data-term="day012"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>用AI摸鱼的人 · 2026 · <a href="https://www.xiaohongshu.com" target="_blank">小红书同名账号</a></p>
+    <p class="footer-note">网站本身也是AI造的 🤖</p>
+  </footer>
+
+</body>
+</html>
